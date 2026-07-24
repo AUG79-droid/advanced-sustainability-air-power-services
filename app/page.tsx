@@ -178,11 +178,18 @@ export default function App() {
   const [active, setActive] = useState(1);
   const [tab, setTab] = useState<"learn" | "apply" | "check">("learn");
   const [content, setContent] = useState<Parsed | null>(null);
-  const [progress, setProgress] = useState<Progress>(EMPTY);
+  const [progress, setProgress] = useState<Progress>(() => {
+    if (typeof window === "undefined") return EMPTY;
+    try {
+      const saved = localStorage.getItem(STORE);
+      return saved ? { ...EMPTY, ...JSON.parse(saved) } : EMPTY;
+    } catch {
+      return EMPTY;
+    }
+  });
   const [resourceTab, setResourceTab] = useState<"tools" | "refs" | "files">("tools");
 
   useEffect(() => {
-    try { const saved = localStorage.getItem(STORE); if (saved) setProgress({ ...EMPTY, ...JSON.parse(saved) }); } catch {}
     fetch("/course-master.html").then(r => r.text()).then(h => setContent(parse(h)));
   }, []);
   useEffect(() => { localStorage.setItem(STORE, JSON.stringify(progress)); }, [progress]);
