@@ -88,6 +88,10 @@ function range(start: Element | null, stop: (e: Element) => boolean) {
   return box.innerHTML;
 }
 
+function normalizedText(element: Element) {
+  return (element.textContent || "").replace(/\s+/g, " ").trim();
+}
+
 function questions(start: Element | null, heading: "H2" | "H3", after?: (e: Element) => boolean) {
   const list: Question[] = [];
   let el = start?.nextElementSibling || null;
@@ -120,10 +124,13 @@ function questions(start: Element | null, heading: "H2" | "H3", after?: (e: Elem
 
 function parse(raw: string): Parsed {
   const doc = new DOMParser().parseFromString(raw, "text/html");
+  doc.querySelectorAll<HTMLImageElement>('img[src^="/course-content/"]').forEach(image => {
+    image.src = `.${image.getAttribute("src")}`;
+  });
   const lessons: Record<number, string> = {}, checks: Record<number, Question[]> = {};
   modules.forEach(m => {
-    const start = Array.from(doc.querySelectorAll("h1")).find(h => (h.textContent || "").trim().startsWith(`Module ${m.id} |`)) || null;
-    const check = (e: Element) => e.tagName === "H2" && /Module knowledge check/i.test(e.textContent || "");
+    const start = Array.from(doc.querySelectorAll("h1")).find(h => normalizedText(h).startsWith(`Module ${m.id} |`)) || null;
+    const check = (e: Element) => e.tagName === "H2" && /Module knowledge check/i.test(normalizedText(e));
     lessons[m.id] = range(start, e => e.tagName === "H1" || check(e));
     checks[m.id] = questions(start, "H3", check);
   });
