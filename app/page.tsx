@@ -178,6 +178,7 @@ export default function App() {
   const [active, setActive] = useState(1);
   const [tab, setTab] = useState<"learn" | "apply" | "check">("learn");
   const [content, setContent] = useState<Parsed | null>(null);
+  const [contentError, setContentError] = useState("");
   const [progress, setProgress] = useState<Progress>(() => {
     if (typeof window === "undefined") return EMPTY;
     try {
@@ -190,7 +191,20 @@ export default function App() {
   const [resourceTab, setResourceTab] = useState<"tools" | "refs" | "files">("tools");
 
   useEffect(() => {
-    fetch("/course-master.html").then(r => r.text()).then(h => setContent(parse(h)));
+    fetch("./course-master.html")
+      .then(r => {
+        if (!r.ok) throw new Error(`Course content request failed (${r.status})`);
+        return r.text();
+      })
+      .then(h => {
+        const parsed = parse(h);
+        if (!parsed.lessons[1]) throw new Error("Course content could not be parsed");
+        setContent(parsed);
+      })
+      .catch(error => {
+        console.error(error);
+        setContentError("The course theory could not be loaded. Please refresh the page. If the problem continues, report this message to the course owner.");
+      });
   }, []);
   useEffect(() => { localStorage.setItem(STORE, JSON.stringify(progress)); }, [progress]);
   useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [view, active, tab]);
@@ -229,14 +243,14 @@ export default function App() {
         <section className="orion"><div><span className="eyebrow light">Recurring applied case</span><h2>The Orion Support Unit</h2><p>Follow a fictitious twelve-aircraft support unit across operations, MRO, logistics, digital maintenance, retrofit and governance. Never enter classified, export-controlled or customer-sensitive information.</p></div><button className="gold" onClick={() => setView("capstone")}>View capstone →</button></section>
       </>}
 
-      {view === "module" && <ModuleScreen m={modules[active - 1]} content={content} progress={progress} patch={patch} tab={tab} setTab={setTab} open={open} home={() => setView("home")} />}
+      {view === "module" && <ModuleScreen m={modules[active - 1]} content={content} contentError={contentError} progress={progress} patch={patch} tab={tab} setTab={setTab} open={open} home={() => setView("home")} />}
       {view === "capstone" && <Capstone content={content} progress={progress} patch={patch} />}
       {view === "exam" && <div className="wide"><PageHero eyebrow="Summative assessment · 30 minutes" title="Final Decision-Quality Check" copy="Eighteen questions cover boundaries, operations, MRO, digital assurance, circularity and governance. A score of 80% is required." code={`${progress.done.length}/6 modules`} />
         {progress.done.length < 6 ? <Locked title="Complete all six module checks to unlock the final assessment." /> : <><Quiz label="Final assessment" items={content?.final || []} best={progress.finalScore || undefined} complete={score => patch({ finalScore: Math.max(progress.finalScore, score), finalPassed: progress.finalPassed || score >= 80 })} />{progress.finalPassed && <section className="award"><div><span className="eyebrow light">Assessment passed</span><h2>Final knowledge requirement complete.</h2><p>Complete the Orion capstone to unlock the certificate.</p></div><button className="gold" disabled={!certificateReady} onClick={() => setView("certificate")}>Open certificate →</button></section>}</>}
       </div>}
       {view === "resources" && <div className="wide"><PageHero eyebrow="Evidence resources" title="Toolkit, glossary and source library" copy="Reuse the decision canvases, check technical definitions and trace every public source supporting the course." code="22 references" />
         <div className="tabs resource-tabs"><button className={resourceTab === "tools" ? "active" : ""} onClick={() => setResourceTab("tools")}>7 decision tools</button><button className={resourceTab === "refs" ? "active" : ""} onClick={() => setResourceTab("refs")}>Glossary & references</button><button className={resourceTab === "files" ? "active" : ""} onClick={() => setResourceTab("files")}>Downloads</button></div>
-        {resourceTab !== "files" ? <article className="prose resource" dangerouslySetInnerHTML={{ __html: resourceTab === "tools" ? content?.toolkit || "" : content?.references || "" }} /> : <div className="downloads"><a href="/downloads/Learner_Workbook.docx" download><b>DOCX</b><span><strong>Learner Workbook</strong><small>Six labs, capstone and claim check.</small></span>↓</a><a href="/downloads/Course_Master.docx" download><b>DOCX</b><span><strong>Complete Course Master</strong><small>Theory, question banks, glossary and sources.</small></span>↓</a></div>}
+        {resourceTab !== "files" ? <article className="prose resource" dangerouslySetInnerHTML={{ __html: resourceTab === "tools" ? content?.toolkit || "" : content?.references || "" }} /> : <div className="downloads"><a href="./downloads/Learner_Workbook.docx" download><b>DOCX</b><span><strong>Learner Workbook</strong><small>Six labs, capstone and claim check.</small></span>↓</a><a href="./downloads/Course_Master.docx" download><b>DOCX</b><span><strong>Complete Course Master</strong><small>Theory, question banks, glossary and sources.</small></span>↓</a></div>}
       </div>}
       {view === "certificate" && <Certificate ready={certificateReady} progress={progress} patch={patch} back={() => setView("home")} />}
     </main>
@@ -252,14 +266,14 @@ function Locked({ title }: { title: string }) {
   return <section className="locked"><b>!</b><h2>{title}</h2><p>Modules can be completed in any order. Retakes are unlimited and the best score is retained.</p></section>;
 }
 
-function ModuleScreen({ m, content, progress, patch, tab, setTab, open, home }: { m: typeof modules[number]; content: Parsed | null; progress: Progress; patch: (p: Partial<Progress>) => void; tab: "learn" | "apply" | "check"; setTab: (t: "learn" | "apply" | "check") => void; open: (n: number) => void; home: () => void }) {
+function ModuleScreen({ m, content, contentError, progress, patch, tab, setTab, open, home }: { m: typeof modules[number]; content: Parsed | null; contentError: string; progress: Progress; patch: (p: Partial<Progress>) => void; tab: "learn" | "apply" | "check"; setTab: (t: "learn" | "apply" | "check") => void; open: (n: number) => void; home: () => void }) {
   const lab = progress.labs[`m${m.id}`] || {};
   const labDone = m.prompts.every((_, i) => (lab[`p${i}`] || "").trim().length > 2);
   const save = (key: string, value: string) => patch({ labs: { ...progress.labs, [`m${m.id}`]: { ...lab, [key]: value } } });
   return <div className="module-page" style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
     <aside><button className="back" onClick={home}>← Course overview</button><span className="eyebrow">Module {String(m.id).padStart(2, "0")}</span><h2>{m.code} · {m.title}</h2><nav><button className={tab === "learn" ? "active" : ""} onClick={() => setTab("learn")}>01 · Learn</button><button className={tab === "apply" ? "active" : ""} onClick={() => setTab("apply")}>02 · Apply {labDone && "✓"}</button><button className={tab === "check" ? "active" : ""} onClick={() => setTab("check")}>03 · Check {progress.done.includes(m.id) && "✓"}</button></nav><div className="gate"><b>Non-negotiable gates</b><p>Safety · Airworthiness · Security · Mission requirements</p></div></aside>
     <div className="module-main"><section className="module-hero"><div><div className="pills"><span>{m.code}</span><span>{m.time}</span><span>Advanced module</span></div><h1>{m.title}</h1><p>{m.q}</p></div><Graphic accent={m.accent} code={m.code} /></section>
-      {tab === "learn" && <section className="panel"><div className="decision"><b>Decision rule</b><p>Define the required service and pass mandatory gates before optimising environmental performance. A preferred technology is not a starting point.</p></div>{content ? <article className="prose" dangerouslySetInnerHTML={{ __html: content.lessons[m.id] }} /> : <div className="loading">Loading developed course theory…</div>}<div className="next"><span><small>Next step</small><b>Turn the theory into an Orion evidence card.</b></span><button className="primary" onClick={() => setTab("apply")}>Open the lab →</button></div></section>}
+      {tab === "learn" && <section className="panel"><div className="decision"><b>Decision rule</b><p>Define the required service and pass mandatory gates before optimising environmental performance. A preferred technology is not a starting point.</p></div>{content ? <article className="prose" dangerouslySetInnerHTML={{ __html: content.lessons[m.id] }} /> : <div className="loading">{contentError || "Loading developed course theory…"}</div>}<div className="next"><span><small>Next step</small><b>Turn the theory into an Orion evidence card.</b></span><button className="primary" onClick={() => setTab("apply")}>Open the lab →</button></div></section>}
       {tab === "apply" && <section className="panel lab"><div className="section-head"><div><span className="eyebrow">Saved evidence lab</span><h2>{m.lab}</h2></div><p>Use fictional Orion data or approved non-sensitive information only. Responses remain on this device.</p></div>{m.prompts.map((p, i) => <label key={p}><span><b>{String(i + 1).padStart(2, "0")}</b>{p}</span><textarea rows={4} value={lab[`p${i}`] || ""} placeholder="Write a concise, evidence-based response…" onChange={e => save(`p${i}`, e.target.value)} /></label>)}<div className={`lab-end ${labDone ? "done" : ""}`}><span><b>{labDone ? "Lab complete" : "Complete all five evidence fields"}</b><small>Your responses are saved automatically.</small></span><button className="primary" disabled={!labDone} onClick={() => setTab("check")}>Continue to check →</button></div></section>}
       {tab === "check" && <Quiz label={`Module ${m.id} knowledge check`} items={content?.checks[m.id] || []} best={progress.scores[`m${m.id}`]} complete={score => patch({ scores: { ...progress.scores, [`m${m.id}`]: Math.max(progress.scores[`m${m.id}`] || 0, score) }, done: score >= 80 ? Array.from(new Set([...progress.done, m.id])).sort() : progress.done })} />}
       <div className="module-nav"><button disabled={m.id === 1} onClick={() => open(m.id - 1)}>← Previous</button><span>{m.id} / 6</span><button disabled={m.id === 6} onClick={() => open(m.id + 1)}>Next →</button></div>
