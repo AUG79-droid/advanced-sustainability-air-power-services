@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "test": "npm run build",
-    "lint": "eslint . --ignore-pattern .next --ignore-pattern out"
+    "lint": "eslint . --ignore-pattern .next --ignore-pattern out --ignore-pattern _next"
   },
   "dependencies": {
     "next": "16.2.6",

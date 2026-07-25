@@ -4,8 +4,16 @@ import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 type View = "home" | "module" | "capstone" | "exam" | "resources" | "certificate";
 type Question = { id: string; prompt: string; options: string[]; correct: number; feedback: string };
+type Activity = {
+  id: string; title: string; instruction: string; prompt: string;
+  type: "single" | "multi" | "numeric" | "matching" | "open";
+  options?: string[]; correct?: number[]; answer?: string; tolerance?: number;
+  rows?: string[]; choices?: string[]; matches?: number[];
+  feedback: string; model?: string;
+};
+type LessonBlock = { kind: "theory"; html: string } | { kind: "activity"; activity: Activity };
 type Parsed = {
-  lessons: Record<number, string>;
+  lessons: Record<number, LessonBlock[]>;
   checks: Record<number, Question[]>;
   final: Question[];
   capstone: string;
@@ -81,6 +89,21 @@ const actions = [
   "Publish a campaign claiming the Orion fleet is 'green' before results are available.",
 ];
 
+const learningActivities: Activity[] = [
+  { id: "m1-a1-boundary-builder", title: "M1-A1 | Boundary Builder", type: "multi", instruction: "Select every item that belongs inside the first comparison.", prompt: "Orion is considering replacing a calendar-based component removal with an approved condition-based decision. Which items belong in the assessment?", options: ["Removed components and their remaining useful condition", "Sensor, data and platform requirements", "Unscheduled failure and operational disruption risk", "Emergency logistics and replacement-parts demand", "Office paper used by an unrelated department", "Safety case, maintenance approval and human decision process"], correct: [0,1,2,3,5], feedback: "A valid comparison follows the entire causal chain. Office paper is outside the decision boundary unless evidence shows a material connection." },
+  { id: "m1-a2-hotspot-or-distraction", title: "M1-A2 | Hotspot or Distraction?", type: "matching", instruction: "Classify every signal before checking your answer.", prompt: "Orion reports lower fuel per flight hour but higher total fuel use. At the same time, urgent spare shipments doubled.", rows: ["Lower fuel per flight hour", "Higher annual flying activity", "Urgent spare shipments", "A new sustainability logo on the dashboard"], choices: ["Performance signal", "Activity driver", "Trade-off hotspot", "Not evidence"], matches: [0,1,2,3], feedback: "Absolute and intensity metrics answer different questions. Communications cannot substitute for operational data." },
+  { id: "m2-a1-continuous-or-conventional", title: "M2-A1 | Continuous or Conventional?", type: "single", instruction: "Choose the preferred profile under the stated conditions.", prompt: "Both profiles are approved. Traffic is light and weather is stable.", options: ["Continuous descent", "Step-down descent", "Either option has identical effects"], correct: [0], feedback: "CDO is likely to reduce fuel and noise because level segments and thrust are reduced. If traffic, weather, separation or mission constraints change, it may no longer be available." },
+  { id: "m2-a2-co2-calculation", title: "M2-A2 | CO₂ Calculation", type: "numeric", instruction: "Enter tonnes of direct combustion CO₂ to one decimal place.", prompt: "A route improvement saves 85 kg of Jet-A1 on each of 310 comparable flights. Use 3.16 kg CO₂ per kg fuel.", answer: "83.3", tolerance: .05, feedback: "85 × 310 × 3.16 ÷ 1,000 = 83.3 t CO₂. This is a direct combustion estimate, not a full lifecycle or total climate benefit." },
+  { id: "m3-a1-find-the-hidden-hotspot", title: "M3-A1 | Find the Hidden Hotspot", type: "multi", instruction: "Select the five items that deserve first investigation.", prompt: "Which observations represent measured or observable material losses?", options: ["Open doors while conditioning", "Compressed-air leaks", "Mixed waste", "Repeated cleaning", "Unused lighting", "The recycling poster’s colour"], correct: [0,1,2,3,4], feedback: "The poster may support communication but does not itself change a material flow. Start with measured or observable losses." },
+  { id: "m3-a2-better-practice-or-rebound", title: "M3-A2 | Better Practice or Rebound?", type: "single", instruction: "Choose the most defensible next step.", prompt: "A proposed solvent substitute has lower VOC content but requires twice the drying energy and has not completed material-compatibility approval.", options: ["Deploy immediately because VOC is lower", "Reject permanently", "Complete technical approval and compare total process effects before deployment", "Call the process zero-impact"], correct: [2], feedback: "One improved attribute is not enough. Technical compatibility and process-level trade-offs must be evaluated." },
+  { id: "m4-a1-name-the-strategy", title: "M4-A1 | Name the Strategy", type: "matching", instruction: "Match every trigger to its maintenance approach.", prompt: "Focus on the decision trigger and how the information is used.", rows: ["Fixed cycle limit", "Vibration threshold", "Model forecasts bearing condition in 40 hours", "Optimiser recommends the lowest-risk maintenance slot"], choices: ["Preventive", "Condition-based", "Predictive", "Prescriptive"], matches: [0,1,2,3], feedback: "The data source alone does not determine the approach; the decision trigger and use of the information do." },
+  { id: "m4-a2-data-vs.-decision", title: "M4-A2 | Data vs. Decision", type: "multi", instruction: "Select the measures that demonstrate a physical outcome.", prompt: "Orion’s dashboard generated 2,000 alerts, gained 70 users, reduced ten urgent removals, avoided six emergency shipments and increased data storage by 15%.", options: ["Alerts generated", "Users", "Urgent removals", "Emergency shipments", "Data storage"], correct: [2,3], feedback: "Urgent removals and emergency shipments are outcome indicators. Alerts and users show activity/adoption; storage is a digital-footprint input." },
+  { id: "m5-a1-retrofit-break-even", title: "M5-A1 | Retrofit Break-Even", type: "numeric", instruction: "Calculate annual fuel saving in tonnes.", prompt: "A modification saves 1.5% of 6,500 kg on each of 420 missions per year.", answer: "40.95", tolerance: .01, feedback: "6,500 × 1.5% × 420 = 40,950 kg, or 40.95 t fuel/year. A decision must also test mission variability, embodiment and remaining utilisation." },
+  { id: "m5-a2-no-automatic-answer", title: "M5-A2 | No Automatic Answer", type: "single", instruction: "Choose the correct analytical response.", prompt: "Aircraft A can fly six more years after retrofit. Replacement B is 14% more fuel-efficient but requires new infrastructure. Annual utilisation is uncertain.", options: ["Extend because reuse is always circular", "Replace because newer is always efficient", "Build comparable scenarios and test utilisation, embodiment, support and infrastructure", "Decide using aircraft age only"], correct: [2], feedback: "Utilisation uncertainty may dominate the result. Neither option can be selected credibly without comparable service scenarios." },
+  { id: "m6-a1-framework-or-obligation", title: "M6-A1 | Framework or Obligation?", type: "matching", instruction: "Match every item to its correct category.", prompt: "The category determines how each item should be applied, governed and communicated.", rows: ["ICAO LTAG", "CORSIA", "NATO GHG methodology", "Site waste permit", "ISO 14001 objective"], choices: ["Global civil goal", "Civil MRV/offsetting scheme with defined scope", "Defence measurement method", "Site-specific legal control", "Management-system commitment"], matches: [0,1,2,3,4], feedback: "A framework, scoped scheme, defence method, legal control and management commitment do not carry the same authority or applicability." },
+  { id: "m6-a2-claim-repair", title: "M6-A2 | Claim Repair", type: "open", instruction: "Rewrite the claim. The model answer remains hidden until you submit.", prompt: "“Our digital twin cut fleet emissions by 25%.” Pilot data only cover emergency shipments for one component family.", model: "During the defined pilot, the digital planning process reduced emergency shipments for the selected component family by 25% versus the stated baseline. The result does not represent total fleet emissions; associated logistics CO₂e will be verified using shipment data and the documented method.", feedback: "A defensible claim narrows the subject, names the pilot boundary and separates activity reduction from a still-to-be-verified emissions result." },
+];
+
 function range(start: Element | null, stop: (e: Element) => boolean) {
   const box = document.createElement("div");
   let el = start?.nextElementSibling || null;
@@ -127,11 +150,34 @@ function parse(raw: string): Parsed {
   doc.querySelectorAll<HTMLImageElement>('img[src^="/course-content/"]').forEach(image => {
     image.src = `.${image.getAttribute("src")}`;
   });
-  const lessons: Record<number, string> = {}, checks: Record<number, Question[]> = {};
+  const lessons: Record<number, LessonBlock[]> = {}, checks: Record<number, Question[]> = {};
   modules.forEach(m => {
     const start = Array.from(doc.querySelectorAll("h1")).find(h => normalizedText(h).startsWith(`Module ${m.id} |`)) || null;
     const check = (e: Element) => e.tagName === "H2" && /Module knowledge check/i.test(normalizedText(e));
-    lessons[m.id] = range(start, e => e.tagName === "H1" || check(e));
+    const lesson = new DOMParser().parseFromString(range(start, e => e.tagName === "H1" || check(e)), "text/html").body;
+    const blocks: LessonBlock[] = [];
+    let theory = document.createElement("div");
+    const flush = () => {
+      if (theory.innerHTML.trim()) blocks.push({ kind: "theory", html: theory.innerHTML });
+      theory = document.createElement("div");
+    };
+    Array.from(lesson.children).forEach(el => {
+      const activity = el.tagName === "H3" ? learningActivities.find(a => a.id === el.id) : undefined;
+      if (activity) {
+        flush();
+        blocks.push({ kind: "activity", activity });
+        let next = el.nextElementSibling;
+        while (next && !(next.tagName === "H2" || next.tagName === "H3")) {
+          const remove = next;
+          next = next.nextElementSibling;
+          remove.remove();
+        }
+      } else if (el.parentElement) {
+        theory.appendChild(el.cloneNode(true));
+      }
+    });
+    flush();
+    lessons[m.id] = blocks;
     checks[m.id] = questions(start, "H3", check);
   });
   const cap = doc.querySelector("#integrated-capstone-orion-24-month-in-service-portfolio");
@@ -178,6 +224,68 @@ function Quiz({ items, label, best, complete }: { items: Question[]; label: stri
     {!sent ? <button className="primary" disabled={Object.keys(answers).length !== items.length} onClick={() => { setSent(true); complete(score); }}>Submit answers</button>
       : <div className={`result ${score >= 80 ? "pass" : "retry"}`}><div><span>{score >= 80 ? "Passed" : "Not yet passed"}</span><b>{score}%</b><p>{score >= 80 ? "Completion requirement met." : "Review the feedback and try again. Retakes are unlimited."}</p></div><button className="secondary" onClick={() => { setAnswers({}); setSent(false); }}>Retake</button></div>}
   </div>;
+}
+
+function LearningActivity({ activity }: { activity: Activity }) {
+  const [selected, setSelected] = useState<number[]>([]);
+  const [matched, setMatched] = useState<number[]>([]);
+  const [written, setWritten] = useState("");
+  const [checked, setChecked] = useState(false);
+  const sorted = (values: number[]) => [...values].sort((a, b) => a - b);
+  const correct = activity.type === "matching"
+    ? activity.matches?.every((value, index) => matched[index] === value) || false
+    : activity.type === "numeric"
+      ? written.trim() !== "" && Math.abs(Number(written.replace(",", ".")) - Number(activity.answer)) <= (activity.tolerance || 0)
+      : activity.type === "open"
+        ? written.trim().length >= 20
+        : JSON.stringify(sorted(selected)) === JSON.stringify(sorted(activity.correct || []));
+  const complete = activity.type === "matching"
+    ? matched.filter(value => value !== undefined).length === activity.rows?.length
+    : activity.type === "numeric" ? written.trim() !== "" && Number.isFinite(Number(written.replace(",", ".")))
+    : activity.type === "open" ? written.trim().length >= 20 : selected.length > 0;
+  const reset = () => { setSelected([]); setMatched([]); setWritten(""); setChecked(false); };
+  const toggle = (index: number) => {
+    if (checked) return;
+    setSelected(values => activity.type === "single" ? [index] : values.includes(index) ? values.filter(value => value !== index) : [...values, index]);
+  };
+  return <section className="learning-activity" aria-labelledby={`${activity.id}-title`}>
+    <div className="activity-head"><span>Interactive learning check</span><b>Answer first. Feedback second.</b></div>
+    <h3 id={`${activity.id}-title`}>{activity.title}</h3>
+    <p className="activity-instruction">{activity.instruction}</p>
+    <p className="activity-prompt">{activity.prompt}</p>
+    {(activity.type === "single" || activity.type === "multi") && <fieldset>
+      <legend className="sr-only">{activity.instruction}</legend>
+      {activity.options?.map((option, index) => {
+        const chosen = selected.includes(index);
+        const isRight = checked && activity.correct?.includes(index);
+        const isWrong = checked && chosen && !activity.correct?.includes(index);
+        return <label key={option} className={`${chosen ? "selected " : ""}${isRight ? "correct " : ""}${isWrong ? "wrong" : ""}`}>
+          <input type={activity.type === "single" ? "radio" : "checkbox"} name={activity.id} checked={chosen} disabled={checked} onChange={() => toggle(index)} />
+          <i>{String.fromCharCode(65 + index)}</i><span>{option}</span>
+        </label>;
+      })}
+    </fieldset>}
+    {activity.type === "matching" && <div className="matching">
+      {activity.rows?.map((row, index) => <label key={row} className={checked ? matched[index] === activity.matches?.[index] ? "correct" : "wrong" : ""}>
+        <span>{row}</span>
+        <select value={matched[index] ?? ""} disabled={checked} onChange={event => setMatched(values => { const next = [...values]; next[index] = Number(event.target.value); return next; })}>
+          <option value="" disabled>Select a category…</option>
+          {activity.choices?.map((choice, choiceIndex) => <option value={choiceIndex} key={choice}>{choice}</option>)}
+        </select>
+      </label>)}
+    </div>}
+    {activity.type === "numeric" && <label className="activity-entry"><span>Your answer</span><div><input inputMode="decimal" value={written} disabled={checked} onChange={event => setWritten(event.target.value)} /><b>tonnes</b></div></label>}
+    {activity.type === "open" && <label className="activity-entry"><span>Your repaired claim</span><textarea rows={5} value={written} disabled={checked} onChange={event => setWritten(event.target.value)} placeholder="Write a bounded, evidence-based claim…" /></label>}
+    {!checked ? <button className="primary" disabled={!complete} onClick={() => setChecked(true)}>Check answer</button> : <>
+      <div className={`activity-feedback ${correct ? "ok" : "no"}`} role="status">
+        <b>{activity.type === "open" ? "Compare your response with the model." : correct ? "Correct." : "Not quite."}</b>
+        {!correct && activity.type !== "open" && <p>The correct response is now highlighted. Review the explanation, then try again.</p>}
+        {activity.type === "open" && <p><strong>Model answer:</strong> {activity.model}</p>}
+        <p>{activity.feedback}</p>
+      </div>
+      <button className="secondary" onClick={reset}>{correct && activity.type !== "open" ? "Answer again" : "Try again"}</button>
+    </>}
+  </section>;
 }
 
 export default function App() {
@@ -280,7 +388,7 @@ function ModuleScreen({ m, content, contentError, progress, patch, tab, setTab, 
   return <div className="module-page" style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
     <aside><button className="back" onClick={home}>← Course overview</button><span className="eyebrow">Module {String(m.id).padStart(2, "0")}</span><h2>{m.code} · {m.title}</h2><nav><button className={tab === "learn" ? "active" : ""} onClick={() => setTab("learn")}>01 · Learn</button><button className={tab === "apply" ? "active" : ""} onClick={() => setTab("apply")}>02 · Apply {labDone && "✓"}</button><button className={tab === "check" ? "active" : ""} onClick={() => setTab("check")}>03 · Check {progress.done.includes(m.id) && "✓"}</button></nav><div className="gate"><b>Non-negotiable gates</b><p>Safety · Airworthiness · Security · Mission requirements</p></div></aside>
     <div className="module-main"><section className="module-hero"><div><div className="pills"><span>{m.code}</span><span>{m.time}</span><span>Advanced module</span></div><h1>{m.title}</h1><p>{m.q}</p></div><Graphic accent={m.accent} code={m.code} /></section>
-      {tab === "learn" && <section className="panel"><div className="decision"><b>Decision rule</b><p>Define the required service and pass mandatory gates before optimising environmental performance. A preferred technology is not a starting point.</p></div>{content ? <article className="prose" dangerouslySetInnerHTML={{ __html: content.lessons[m.id] }} /> : <div className="loading">{contentError || "Loading developed course theory…"}</div>}<div className="next"><span><small>Next step</small><b>Turn the theory into an Orion evidence card.</b></span><button className="primary" onClick={() => setTab("apply")}>Open the lab →</button></div></section>}
+      {tab === "learn" && <section className="panel"><div className="decision"><b>Decision rule</b><p>Define the required service and pass mandatory gates before optimising environmental performance. A preferred technology is not a starting point.</p></div>{content ? <article className="prose">{content.lessons[m.id].map((block, index) => block.kind === "theory" ? <div key={index} dangerouslySetInnerHTML={{ __html: block.html }} /> : <LearningActivity key={block.activity.id} activity={block.activity} />)}</article> : <div className="loading">{contentError || "Loading developed course theory…"}</div>}<div className="next"><span><small>Next step</small><b>Turn the theory into an Orion evidence card.</b></span><button className="primary" onClick={() => setTab("apply")}>Open the lab →</button></div></section>}
       {tab === "apply" && <section className="panel lab"><div className="section-head"><div><span className="eyebrow">Saved evidence lab</span><h2>{m.lab}</h2></div><p>Use fictional Orion data or approved non-sensitive information only. Responses remain on this device.</p></div>{m.prompts.map((p, i) => <label key={p}><span><b>{String(i + 1).padStart(2, "0")}</b>{p}</span><textarea rows={4} value={lab[`p${i}`] || ""} placeholder="Write a concise, evidence-based response…" onChange={e => save(`p${i}`, e.target.value)} /></label>)}<div className={`lab-end ${labDone ? "done" : ""}`}><span><b>{labDone ? "Lab complete" : "Complete all five evidence fields"}</b><small>Your responses are saved automatically.</small></span><button className="primary" disabled={!labDone} onClick={() => setTab("check")}>Continue to check →</button></div></section>}
       {tab === "check" && <Quiz label={`Module ${m.id} knowledge check`} items={content?.checks[m.id] || []} best={progress.scores[`m${m.id}`]} complete={score => patch({ scores: { ...progress.scores, [`m${m.id}`]: Math.max(progress.scores[`m${m.id}`] || 0, score) }, done: score >= 80 ? Array.from(new Set([...progress.done, m.id])).sort() : progress.done })} />}
       <div className="module-nav"><button disabled={m.id === 1} onClick={() => open(m.id - 1)}>← Previous</button><span>{m.id} / 6</span><button disabled={m.id === 6} onClick={() => open(m.id + 1)}>Next →</button></div>
