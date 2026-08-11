@@ -383,15 +383,6 @@ export default function App() {
           </div>
           <div className="hero-graphic photo-frame"><img src="./images/hero-air-power.webp" alt="Air Power aircraft supported by maintenance and ground teams" /></div>
         </section>
-        <section className="course-guide" aria-labelledby="course-guide-title">
-          <div className="guide-intro"><span className="eyebrow">New here? Start with this</span><h2 id="course-guide-title">You do not need to guess how the course works.</h2><p>Work through the six modules in order. Every module follows the same three-step rhythm, and the course saves your progress on this device.</p></div>
-          <div className="guide-steps">
-            <article><b>01</b><span><strong>Learn</strong><small>Read the developed explanation, examples and evidence limits. Answer the short activities as they appear.</small></span></article>
-            <article><b>02</b><span><strong>Apply</strong><small>Use the fictitious Orion case in a guided tool. Your entries save automatically; no sensitive data is needed.</small></span></article>
-            <article><b>03</b><span><strong>Check</strong><small>Answer five questions. Score 80% to complete the module; you can try again and learn from the feedback.</small></span></article>
-          </div>
-          <div className="after-modules"><b>After module 6</b><span>Complete Orion’s guided final project → take the final assessment → unlock your certificate.</span></div>
-        </section>
         <section className="status"><div className="donut" style={{ "--p": `${pct * 3.6}deg` } as CSSProperties}><span><b>{pct}%</b><small>complete</small></span></div><div><span className="eyebrow">Your learning record</span><h2>{progress.done.length ? `${progress.done.length} of 6 modules completed` : "Your course progress starts here"}</h2><p>Progress and application responses are saved on this device. Pass all module checks, complete Orion’s guided final project and score at least 80% in the final assessment.</p></div><div className="steps"><span className={progress.done.length === 6 ? "done" : ""}>1 · Modules</span><span className={progress.capstoneDone ? "done" : ""}>2 · Final project</span><span className={progress.finalPassed ? "done" : ""}>3 · Assessment</span></div></section>
         <section className="program"><div className="section-head"><div><span className="eyebrow">High-density curriculum</span><h2>Six modules. One connected decision system.</h2></div><p>Each module combines developed theory, an Orion scenario, a saved evidence lab and an auto-graded knowledge check.</p></div>
           <div className="module-grid">{modules.map(m => <article className="module-card" key={m.id} style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
