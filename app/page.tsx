@@ -45,37 +45,37 @@ const EMPTY: Progress = {
 const STORE = "aps-advanced-sustainability-v1";
 
 const modules = [
-  { id: 1, code: "SYS", time: "80 min", accent: "#72d5bf", soft: "#dff7f0",
+  { id: 1, code: "SYS", time: "80 min", accent: "#72d5bf", soft: "#dff7f0", image: "module-systems.webp",
     title: "In-Service Systems, Lifecycle Boundaries and Decision Quality",
     q: "How can we decide what matters without drawing the system boundary too narrowly?",
     intro: "Frame comparable alternatives, choose a meaningful functional unit and diagnose lifecycle hotspots before selecting a solution.",
     lab: "Orion Boundary & Hotspot Canvas",
     prompts: ["Decision and credible alternatives", "Required service and functional unit", "Boundary and material exclusions", "Three potential lifecycle hotspots", "Safety, airworthiness, security and mission gates"] },
-  { id: 2, code: "OPS", time: "100 min", accent: "#f0c364", soft: "#fff2cf",
+  { id: 2, code: "OPS", time: "100 min", accent: "#f0c364", soft: "#fff2cf", image: "module-ops.webp",
     title: "Sustainable Flight Operations and Navigation",
     q: "Which operational levers reduce avoidable impact while protecting the authorised mission?",
     intro: "Separate mission demand from avoidable inefficiency, evaluate CCO/CDO and PBN, and calculate direct fuel and CO₂ effects.",
     lab: "Orion Sortie Profile Challenge",
     prompts: ["Comparable mission class", "Approved operational measure", "Baseline and activity data", "Direct CO₂ calculation and limitations", "Operational and mission constraints"] },
-  { id: 3, code: "MRO", time: "110 min", accent: "#ff8a76", soft: "#ffe3dd",
+  { id: 3, code: "MRO", time: "110 min", accent: "#ff8a76", soft: "#ffe3dd", image: "module-mro.webp",
     title: "Sustainable Maintenance, MRO and Material Support",
     q: "How can maintenance reduce its footprint and improve the performance it enables?",
     intro: "Follow physical work, prevent waste and repeat defects, control hazardous flows and balance environmental KPIs with technical outcomes.",
     lab: "MRO Hotspot Walkdown",
     prompts: ["Process and approved technical outcome", "Physical inputs and outputs", "Repeat work and failure demand", "Prevention opportunity", "Environmental KPI and technical guardrail"] },
-  { id: 4, code: "DATA", time: "100 min", accent: "#8eb5ff", soft: "#e4edff",
+  { id: 4, code: "DATA", time: "100 min", accent: "#8eb5ff", soft: "#e4edff", image: "module-digital.webp",
     title: "Digital Solutions and Data-Driven In-Service Sustainability",
     q: "When does a prediction or dashboard become a verified sustainability outcome?",
     intro: "Build the causal chain from data to authorised action, control model risk and quantify physical benefits against a credible counterfactual.",
     lab: "Digital Use-Case Evidence Card",
     prompts: ["Decision problem and counterfactual", "Data → model → decision → action → outcome", "Assurance and authorisation controls", "Physical benefit metric", "False-positive, false-negative and rebound risks"] },
-  { id: 5, code: "LIFE", time: "110 min", accent: "#c6a3ff", soft: "#efe5ff",
+  { id: 5, code: "LIFE", time: "110 min", accent: "#c6a3ff", soft: "#efe5ff", image: "module-lifecycle.webp",
     title: "Upgrades, Life Extension, Retirement and Circularity",
     q: "How do we compare retrofit, extension, replacement and retirement without assuming the answer?",
     intro: "Treat retrofit as a lifecycle investment, compare the same service over the same horizon and preserve value through controlled circular routes.",
     lab: "Lifecycle Scenario Comparator",
     prompts: ["Common service requirement", "Extend, retrofit, replace and retire scenarios", "Embodied and in-service effects", "Traceability and circular value", "Break-even and sensitivity variables"] },
-  { id: 6, code: "GOV", time: "100 min", accent: "#78d0ff", soft: "#dff4ff",
+  { id: 6, code: "GOV", time: "100 min", accent: "#78d0ff", soft: "#dff4ff", image: "module-governance.webp",
     title: "Governance, Measurement and In-Service Roadmapping",
     q: "How do we know what applies, what to measure and what we can credibly claim?",
     intro: "Separate civil and state-aircraft scope, govern KPIs, repair weak claims and build an owned, evidence-based roadmap.",
@@ -235,14 +235,6 @@ function parse(raw: string): Parsed {
   };
 }
 
-function Graphic({ accent = "#72d5bf", code = "APS" }) {
-  return <div className="graphic" style={{ "--accent": accent } as CSSProperties}>
-    <i className="ring r1" /><i className="ring r2" /><i className="route" />
-    <div className="aircraft" /><span className="data d1">12 AC / SERVICE</span>
-    <span className="data d2">{code} / EVIDENCE</span><span className="data d3">MISSION READY</span>
-  </div>;
-}
-
 function Quiz({ items, label, best, complete }: { items: Question[]; label: string; best?: number; complete: (n: number) => void }) {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [sent, setSent] = useState(false);
@@ -389,12 +381,21 @@ export default function App() {
             <div className="buttons"><button className="gold" onClick={() => open(modules.find(m => !progress.done.includes(m.id))?.id || 1)}>{progress.done.length ? "Resume course" : "Start the course"} →</button><button className="ghost" onClick={() => setView("resources")}>Explore the toolkit</button></div>
             <div className="metrics"><span><b>06</b> developed modules</span><span><b>30</b> module questions</span><span><b>07</b> guided applications</span></div>
           </div>
-          <div className="hero-graphic"><Graphic /><div className="sequence"><i /> <span><small>Decision sequence</small><b>Gate → Evidence → Optimise → Verify</b></span></div></div>
+          <div className="hero-graphic photo-frame"><img src="./images/hero-air-power.webp" alt="Air Power aircraft supported by maintenance and ground teams" /><div className="sequence"><i /> <span><small>The course mindset</small><b>Gate → Evidence → Optimise → Verify</b></span></div></div>
+        </section>
+        <section className="course-guide" aria-labelledby="course-guide-title">
+          <div className="guide-intro"><span className="eyebrow">New here? Start with this</span><h2 id="course-guide-title">You do not need to guess how the course works.</h2><p>Work through the six modules in order. Every module follows the same three-step rhythm, and the course saves your progress on this device.</p></div>
+          <div className="guide-steps">
+            <article><b>01</b><span><strong>Learn</strong><small>Read the developed explanation, examples and evidence limits. Answer the short activities as they appear.</small></span></article>
+            <article><b>02</b><span><strong>Apply</strong><small>Use the fictitious Orion case in a guided tool. Your entries save automatically; no sensitive data is needed.</small></span></article>
+            <article><b>03</b><span><strong>Check</strong><small>Answer five questions. Score 80% to complete the module; you can try again and learn from the feedback.</small></span></article>
+          </div>
+          <div className="after-modules"><b>After module 6</b><span>Complete the Orion capstone → take the final assessment → unlock your certificate.</span></div>
         </section>
         <section className="status"><div className="donut" style={{ "--p": `${pct * 3.6}deg` } as CSSProperties}><span><b>{pct}%</b><small>complete</small></span></div><div><span className="eyebrow">Your learning record</span><h2>{progress.done.length ? `${progress.done.length} of 6 modules completed` : "Your course progress starts here"}</h2><p>Progress and lab responses are saved on this device. Pass all module checks, complete the Orion capstone and score at least 80% in the final assessment.</p></div><div className="steps"><span className={progress.done.length === 6 ? "done" : ""}>1 · Modules</span><span className={progress.capstoneDone ? "done" : ""}>2 · Capstone</span><span className={progress.finalPassed ? "done" : ""}>3 · Assessment</span></div></section>
         <section className="program"><div className="section-head"><div><span className="eyebrow">High-density curriculum</span><h2>Six modules. One connected decision system.</h2></div><p>Each module combines developed theory, an Orion scenario, a saved evidence lab and an auto-graded knowledge check.</p></div>
           <div className="module-grid">{modules.map(m => <article className="module-card" key={m.id} style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
-            <div className="module-art"><b>{String(m.id).padStart(2, "0")}</b><span>{m.code}</span><i /></div>
+            <div className="module-art"><img src={`./images/${m.image}`} alt="" /><b>{String(m.id).padStart(2, "0")}</b><span>{m.code}</span></div>
             <div className="module-copy"><div className="meta"><span>{m.time}</span><span>{progress.done.includes(m.id) ? "Completed" : "Open"}</span></div><h3>{m.title}</h3><p>{m.intro}</p><div><button onClick={() => open(m.id)}>{progress.done.includes(m.id) ? "Review module" : "Open module"} →</button></div></div>
           </article>)}</div>
         </section>
@@ -453,9 +454,10 @@ function ModuleScreen({ m, content, contentError, progress, patch, tab, setTab, 
   const labDone = moduleTools.every(tool => tool.fields.every(field => (lab[`t${tool.number}-${field.key}`] || "").trim().length >= (field.min || 20)));
   const save = (key: string, value: string) => patch({ labs: { ...progress.labs, [`m${m.id}`]: { ...lab, [key]: value } } });
   return <div className="module-page" style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
-    <aside><button className="back" onClick={home}>← Course overview</button><span className="eyebrow">Module {String(m.id).padStart(2, "0")}</span><h2>{m.code} · {m.title}</h2><nav><button className={tab === "learn" ? "active" : ""} onClick={() => setTab("learn")}>01 · Learn</button><button className={tab === "apply" ? "active" : ""} onClick={() => setTab("apply")}>02 · Apply {labDone && "✓"}</button><button className={tab === "check" ? "active" : ""} onClick={() => setTab("check")}>03 · Check {progress.done.includes(m.id) && "✓"}</button></nav><div className="gate"><b>Non-negotiable gates</b><p>Safety · Airworthiness · Security · Mission requirements</p></div></aside>
-    <div className="module-main"><section className="module-hero"><div><div className="pills"><span>{m.code}</span><span>{m.time}</span><span>Advanced module</span></div><h1>{m.title}</h1><p>{m.q}</p></div><Graphic accent={m.accent} code={m.code} /></section>
-      {tab === "learn" && <section className="panel"><div className="decision"><b>Decision rule</b><p>Define the required service and pass mandatory gates before optimising environmental performance. A preferred technology is not a starting point.</p></div>{content ? <article className="prose">{content.lessons[m.id].map((block, index) => block.kind === "theory" ? <div key={index} dangerouslySetInnerHTML={{ __html: block.html }} /> : <LearningActivity key={block.activity.id} activity={block.activity} />)}</article> : <div className="loading">{contentError || "Loading developed course theory…"}</div>}<div className="next"><span><small>Next step</small><b>Turn the theory into an Orion evidence card.</b></span><button className="primary" onClick={() => setTab("apply")}>Open the lab →</button></div></section>}
+    <aside><button className="back" onClick={home}>← Course overview</button><span className="eyebrow">Module {String(m.id).padStart(2, "0")}</span><h2>{m.code} · {m.title}</h2><p className="aside-help">Move from top to bottom. A tick appears when a stage is complete.</p><nav><button className={tab === "learn" ? "active" : ""} onClick={() => setTab("learn")}><b>01 · Learn</b><small>Understand the decision</small></button><button className={tab === "apply" ? "active" : ""} onClick={() => setTab("apply")}><b>02 · Apply {labDone && "✓"}</b><small>Build the Orion evidence</small></button><button className={tab === "check" ? "active" : ""} onClick={() => setTab("check")}><b>03 · Check {progress.done.includes(m.id) && "✓"}</b><small>Confirm what you learned</small></button></nav><div className="gate"><b>Always protect first</b><p>Safety · Airworthiness · Security · Mission requirements</p></div></aside>
+    <div className="module-main"><section className="module-hero"><div><div className="pills"><span>{m.code}</span><span>{m.time}</span><span>Module {m.id} of 6</span></div><span className="module-question">Guiding question</span><h1>{m.title}</h1><p>{m.q}</p></div><div className="module-photo"><img src={`./images/${m.image}`} alt={`Operational context for ${m.title}`} /></div></section>
+      <section className="module-compass"><div><span>You are here</span><b>{tab === "learn" ? "1 · Learn the reasoning" : tab === "apply" ? "2 · Apply it to Orion" : "3 · Check your understanding"}</b></div><p>{tab === "learn" ? "Read in order and complete the activities embedded in the lesson. Explanations appear after you answer." : tab === "apply" ? "Follow the numbered instructions. Open the worked example only if you need help, then complete every field." : "Select one answer for each question. Submit when all five are answered; 80% completes the module."}</p></section>
+      {tab === "learn" && <section className="panel"><div className="lesson-welcome"><b>What you will be able to do</b><p>{m.intro}</p><span>Estimated time: {m.time}. You can leave and return at any time.</span></div><div className="decision"><b>Keep this rule in mind</b><p>Define the required service and pass mandatory gates before optimising environmental performance. A preferred technology is not a starting point.</p></div>{content ? <article className="prose">{content.lessons[m.id].map((block, index) => block.kind === "theory" ? <div key={index} dangerouslySetInnerHTML={{ __html: block.html }} /> : <LearningActivity key={block.activity.id} activity={block.activity} />)}</article> : <div className="loading">{contentError || "Loading developed course theory…"}</div>}<div className="next"><span><small>You have finished the explanation</small><b>Now turn the theory into an Orion evidence card.</b></span><button className="primary" onClick={() => setTab("apply")}>Continue to 02 · Apply →</button></div></section>}
       {tab === "apply" && <section className="panel lab"><div className="section-head"><div><span className="eyebrow">Guided application · saved automatically</span><h2>{m.lab}</h2></div><p>Use the Orion case or approved non-sensitive information only. Each tool explains what to enter and provides formative feedback.</p></div>{moduleTools.map(tool => <GuidedTool key={tool.number} tool={tool} values={Object.fromEntries(tool.fields.map(field => [field.key, lab[`t${tool.number}-${field.key}`] || ""]))} save={(key, value) => save(`t${tool.number}-${key}`, value)} />)}<div className={`lab-end ${labDone ? "done" : ""}`}><span><b>{labDone ? "Application complete" : `Complete Tool ${moduleTools.map(t => t.number).join(" and Tool ")}`}</b><small>Your responses are saved automatically on this device.</small></span><button className="primary" disabled={!labDone} onClick={() => setTab("check")}>Continue to check →</button></div></section>}
       {tab === "check" && <Quiz label={`Module ${m.id} knowledge check`} items={content?.checks[m.id] || []} best={progress.scores[`m${m.id}`]} complete={score => patch({ scores: { ...progress.scores, [`m${m.id}`]: Math.max(progress.scores[`m${m.id}`] || 0, score) }, done: score >= 80 ? Array.from(new Set([...progress.done, m.id])).sort() : progress.done })} />}
       <div className="module-nav"><button disabled={m.id === 1} onClick={() => open(m.id - 1)}>← Previous</button><span>{m.id} / 6</span><button disabled={m.id === 6} onClick={() => open(m.id + 1)}>Next →</button></div>
