@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 type View = "home" | "module" | "capstone" | "exam" | "resources" | "certificate";
+type Lang = "en" | "es";
 type Question = { id: string; prompt: string; options: string[]; correct: number; feedback: string };
 type Activity = {
   id: string; title: string; instruction: string; prompt: string;
@@ -44,7 +45,7 @@ const EMPTY: Progress = {
 };
 const STORE = "aps-advanced-sustainability-v1";
 
-const modules = [
+const modulesEn = [
   { id: 1, code: "SYS", time: "80 min", accent: "#72d5bf", soft: "#dff7f0", image: "module-systems.webp",
     title: "In-Service Systems, Lifecycle Boundaries and Decision Quality",
     q: "How can we decide what matters without drawing the system boundary too narrowly?",
@@ -82,6 +83,17 @@ const modules = [
     lab: "In-Service Sustainability Roadmap",
     prompts: ["Priority action and accountable owner", "Applicability and decision boundary", "Governed KPI definition", "Target, milestone and review trigger", "Precise evidence-based claim"] },
 ];
+
+const modulesEs = modulesEn.map((m, index) => ({ ...m, ...[
+  { title: "Sistemas en servicio, límites del ciclo de vida y calidad de decisión", q: "¿Cómo decidimos qué es material sin definir un límite demasiado estrecho?", intro: "Compara alternativas equivalentes, define una unidad funcional útil e identifica hotspots antes de seleccionar una solución.", lab: "Canvas de límites y hotspots de Orion" },
+  { title: "Operaciones de vuelo y navegación sostenibles", q: "¿Qué palancas operacionales reducen impactos evitables sin comprometer la misión autorizada?", intro: "Separa la demanda de misión de la ineficiencia evitable, evalúa CCO, CDO y PBN y calcula efectos directos sobre combustible y CO₂.", lab: "Reto de perfil de vuelo Orion" },
+  { title: "Mantenimiento sostenible, MRO y soporte de materiales", q: "¿Cómo puede el mantenimiento reducir su huella y mejorar el desempeño que habilita?", intro: "Sigue el trabajo físico, previene residuos y retrabajos, controla flujos peligrosos y equilibra indicadores ambientales y técnicos.", lab: "Walkdown de hotspots MRO" },
+  { title: "Soluciones digitales y sostenibilidad basada en datos", q: "¿Cuándo una predicción o un panel se convierte en un resultado ambiental verificado?", intro: "Construye la cadena causal desde los datos hasta la acción autorizada y cuantifica beneficios físicos frente a un contrafactual creíble.", lab: "Ficha de evidencia del caso digital" },
+  { title: "Modernización, extensión de vida, retirada y circularidad", q: "¿Cómo comparamos retrofit, extensión, sustitución y retirada sin presuponer la respuesta?", intro: "Compara el mismo servicio y horizonte, incorpora efectos de ciclo de vida y preserva valor mediante rutas circulares controladas.", lab: "Comparador de escenarios de ciclo de vida" },
+  { title: "Gobernanza, medición y hoja de ruta en servicio", q: "¿Cómo sabemos qué aplica, qué debemos medir y qué podemos afirmar con rigor?", intro: "Distingue alcance civil y aeronaves de Estado, gobierna KPIs, repara afirmaciones débiles y construye una hoja de ruta basada en evidencia.", lab: "Hoja de ruta de sostenibilidad en servicio" },
+][index] }));
+
+const modules = modulesEn;
 
 const actions = [
   "Standardise post-flight fuel and mission-context data; test two approved profile improvements.",
@@ -131,6 +143,18 @@ const toolsByModule: Record<number, ToolConfig[]> = {
     example: [{ field: "Repaired claim", answer: "During the defined pilot, emergency shipments for the selected component family fell by 25% versus the stated baseline. This is not a total fleet-emissions result; associated logistics CO₂e remains to be verified." }],
     fields: [{ key: "original", label: "Original proposed claim", help: "Record the exact wording before editing.", placeholder: "Our digital twin…", min: 20 }, { key: "evidence", label: "Baseline, boundary and evidence", help: "Distinguish measured, modelled and assumed values.", placeholder: "Baseline… Boundary… Measured…", min: 50 }, { key: "tradeoffs", label: "Attribution and trade-off check", help: "Explain other causes, displaced effects and material limitations.", placeholder: "Cannot attribute solely because…", min: 40 }, { key: "repair", label: "Repaired claim", help: "Use precise subject, comparison, result and visible limitation; avoid green/clean/zero/sustainable unless defined.", placeholder: "During the defined pilot…", min: 60 }, { key: "approval", label: "Evidence owner and approval route", help: "Name who verifies the data and who approves communication.", placeholder: "Evidence owner… Approval by…", min: 30 }] }]
 };
+
+const toolEsCopy: Record<number, { title: string; purpose: string; outcome: string; steps: string[]; caseData: string[] }> = {
+  1:{title:"Canvas de límites y hotspots",purpose:"Define una decisión antes de comparar su desempeño ambiental.",outcome:"Un límite de comparación defendible y una hipótesis priorizada de hotspots.",steps:["Formula la decisión y alternativas creíbles.","Define el servicio común.","Establece límites y exclusiones justificadas.","Identifica hotspots y condiciones obligatorias."],caseData:["Orion opera 12 aeronaves.","Hubo 28 retiradas no programadas; 11 sin defecto confirmado.","Se compara la retirada por calendario con una decisión aprobada basada en condición.","Pueden cambiar sensores, logística y autorizaciones."]},
+  2:{title:"Ficha de evidencia de una medida operacional",purpose:"Contrasta una medida con una línea base de misión comparable.",outcome:"Una estimación acotada de combustible y CO₂ con limitaciones operacionales.",steps:["Define una clase de misión comparable.","Describe medida y línea base.","Calcula combustible y CO₂ directo.","Registra restricciones y verificación."],caseData:["310 vuelos comparables al año.","El perfil aprobado ahorra 85 kg de Jet-A1 por vuelo.","Usa 3,16 kg CO₂ directo por kg de combustible.","Controla meteorología, ATC, misión y carga."]},
+  3:{title:"Walkdown de hotspots MRO",purpose:"Sigue físicamente un proceso e identifica pérdidas evitables.",outcome:"Una acción preventiva con KPI ambiental y salvaguarda técnica.",steps:["Elige proceso y resultado aprobado.","Mapea entradas y salidas.","Identifica retrabajo y demanda de fallo.","Prioriza prevención antes que tratamiento."],caseData:["Se repite la limpieza en el 8% de inspecciones.","Las puertas quedan abiertas con aire acondicionado activo.","Las toallitas con disolvente entran en residuo peligroso mezclado.","Todo cambio exige compatibilidad y aprobación técnica."]},
+  4:{title:"Ficha de evidencia del caso digital",purpose:"Demuestra cómo una salida digital cambia una decisión autorizada y un resultado físico.",outcome:"Una cadena causal completa con controles y verificación.",steps:["Define decisión y contrafactual.","Construye la cadena datos–resultado.","Analiza errores y rebote.","Verifica un resultado físico."],caseData:["El modelo aborda 11 retiradas sin defecto confirmado.","El modelo no autoriza por sí mismo continuar la operación.","Los errores pueden afectar fiabilidad o crear trabajo innecesario.","Retiradas y envíos urgentes son resultados físicos candidatos."]},
+  5:{title:"Comparador de escenarios de ciclo de vida",purpose:"Compara extensión, retrofit, sustitución y retirada con el mismo servicio.",outcome:"Una recomendación condicionada con punto de equilibrio e incertidumbre.",steps:["Fija servicio y horizonte.","Construye cuatro escenarios comparables.","Incluye efectos incorporados, operacionales y de transición.","Prueba sensibilidad y punto de equilibrio."],caseData:["Seis aeronaves podrían recibir retrofit durante seis años.","La sustitución consume un 14% menos pero necesita infraestructura y formación.","El retrofit ahorra 1,5% de 6.500 kg en 420 misiones anuales.","La utilización futura es incierta."]},
+  6:{title:"Hoja de ruta en servicio",purpose:"Convierte acciones respaldadas por evidencia en un plan de 24 meses.",outcome:"Una acción gobernada con línea base, KPI, hitos, riesgos y revisión.",steps:["Selecciona una acción material.","Asigna responsabilidad y autoridad.","Define línea base, KPI y objetivo.","Establece hitos, controles y revisión."],caseData:["Orion debe seleccionar cuatro acciones.","Disponibilidad y misión son condiciones obligatorias.","Todo KPI necesita propietario, unidad, límite, frecuencia y fuente.","Un objetivo no es un resultado."]},
+  7:{title:"Control de afirmaciones de sostenibilidad",purpose:"Evita que una afirmación ambiental exceda su evidencia.",outcome:"Una afirmación precisa con límite, línea base, método y limitaciones.",steps:["Escribe la afirmación literal.","Comprueba línea base, límite y evidencia.","Evalúa atribución y trade-offs.","Repara la afirmación antes de aprobarla."],caseData:["El piloto muestra un 25% menos de envíos urgentes en una familia.","No existe cálculo de emisiones de toda la flota.","El CO₂e logístico aún no está verificado.","«Flota verde» no está respaldado."]}
+};
+const spanishFieldLabels: Record<string,string>={decision:"Decisión y alternativas",service:"Servicio requerido y unidad funcional",boundary:"Límite y exclusiones",hotspots:"Hipótesis de hotspots",gates:"Condiciones obligatorias",mission:"Clase de misión comparable",measure:"Medida y línea base",calculation:"Cálculo de combustible y CO₂",limits:"Restricciones y limitaciones",verify:"Plan de verificación",process:"Proceso y resultado aprobado",flows:"Entradas y salidas físicas",failure:"Retrabajo y demanda de fallo",prevention:"Oportunidad de prevención",kpi:"KPI y salvaguarda técnica",chain:"Cadena causal",controls:"Aseguramiento y autorización",risks:"Riesgos de error y rebote",scenarios:"Definición de cuatro escenarios",effects:"Efectos de ciclo de vida y transición",breakEven:"Punto de equilibrio y sensibilidad",recommendation:"Recomendación condicionada",action:"Acción prioritaria y responsable",baseline:"Línea base y aplicabilidad",target:"Objetivo e hitos",risk:"Riesgo, control y revisión",original:"Afirmación original",evidence:"Línea base, límite y evidencia",tradeoffs:"Atribución y trade-offs",repair:"Afirmación reparada",approval:"Responsable de evidencia y aprobación"};
+const toolsByModuleEs: Record<number,ToolConfig[]> = Object.fromEntries(Object.entries(toolsByModule).map(([moduleId, tools]) => [Number(moduleId), tools.map(tool => ({...tool,...toolEsCopy[tool.number],fields:tool.fields.map(field=>({...field,label:spanishFieldLabels[field.key]||field.label,help:"Incluye suficiente detalle, límites, unidades y evidencia para que otra persona pueda revisar la decisión.",placeholder:"Escribe aquí una respuesta concreta y verificable…"})),example:tool.example.map(row=>({field:spanishFieldLabels[row.field.toLowerCase()]||row.field,answer:row.answer}))}))]));
 
 const learningActivities: Activity[] = [
   { id: "m1-a1-boundary-builder", title: "M1-A1 | Boundary Builder", type: "multi", instruction: "Select every item that belongs inside the first comparison.", prompt: "Orion is considering replacing a calendar-based component removal with an approved condition-based decision. Which items belong in the assessment?", options: ["Removed components and their remaining useful condition", "Sensor, data and platform requirements", "Unscheduled failure and operational disruption risk", "Emergency logistics and replacement-parts demand", "Office paper used by an unrelated department", "Safety case, maintenance approval and human decision process"], correct: [0,1,2,3,5], feedback: "A valid comparison follows the entire causal chain. Office paper is outside the decision boundary unless evidence shows a material connection." },
@@ -188,15 +212,15 @@ function questions(start: Element | null, heading: "H2" | "H3", after?: (e: Elem
   return list;
 }
 
-function parse(raw: string): Parsed {
+function parse(raw: string, lang: Lang = "en"): Parsed {
   const doc = new DOMParser().parseFromString(raw, "text/html");
   doc.querySelectorAll<HTMLImageElement>('img[src^="/course-content/"]').forEach(image => {
     image.src = `.${image.getAttribute("src")}`;
   });
   const lessons: Record<number, LessonBlock[]> = {}, checks: Record<number, Question[]> = {};
-  modules.forEach(m => {
-    const start = Array.from(doc.querySelectorAll("h1")).find(h => normalizedText(h).startsWith(`Module ${m.id} |`)) || null;
-    const check = (e: Element) => e.tagName === "H2" && /Module knowledge check/i.test(normalizedText(e));
+  modulesEn.forEach(m => {
+    const start = Array.from(doc.querySelectorAll("h1")).find(h => normalizedText(h).startsWith(lang === "es" ? `Módulo ${m.id} |` : `Module ${m.id} |`)) || null;
+    const check = (e: Element) => e.tagName === "H2" && (lang === "es" ? /Comprobación de conocimientos del módulo/i : /Module knowledge check/i).test(normalizedText(e));
     const lesson = new DOMParser().parseFromString(range(start, e => e.tagName === "H1" || check(e)), "text/html").body;
     const blocks: LessonBlock[] = [];
     let theory = document.createElement("div");
@@ -352,6 +376,7 @@ function ExerciseSolutions({ moduleId }: { moduleId: number }) {
 }
 
 export default function App() {
+  const [lang, setLang] = useState<Lang>(() => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("lang") === "es" ? "es" : "en");
   const [view, setView] = useState<View>("home");
   const [active, setActive] = useState(1);
   const [tab, setTab] = useState<"learn" | "apply" | "check">("learn");
@@ -369,51 +394,58 @@ export default function App() {
   const [resourceTab, setResourceTab] = useState<"refs" | "files">("refs");
 
   useEffect(() => {
-    fetch("./course-master.html")
+    setContent(null);
+    setContentError("");
+    fetch(lang === "es" ? "./course-master-es.html" : "./course-master.html")
       .then(r => {
         if (!r.ok) throw new Error(`Course content request failed (${r.status})`);
         return r.text();
       })
       .then(h => {
-        const parsed = parse(h);
+        const parsed = parse(h, lang);
         if (!parsed.lessons[1]) throw new Error("Course content could not be parsed");
         setContent(parsed);
       })
       .catch(error => {
         console.error(error);
-        setContentError("The course theory could not be loaded. Please refresh the page. If the problem continues, report this message to the course owner.");
+        setContentError(lang === "es" ? "No se ha podido cargar la teoría del curso. Actualiza la página y, si continúa el problema, comunícalo a la persona responsable del curso." : "The course theory could not be loaded. Please refresh the page. If the problem continues, report this message to the course owner.");
       });
-  }, []);
-  useEffect(() => { localStorage.setItem(STORE, JSON.stringify(progress)); }, [progress]);
+  }, [lang]);
+  useEffect(() => {
+    try { const saved = localStorage.getItem(`${STORE}-${lang}`); setProgress(saved ? { ...EMPTY, ...JSON.parse(saved) } : EMPTY); } catch { setProgress(EMPTY); }
+  }, [lang]);
+  useEffect(() => { localStorage.setItem(`${STORE}-${lang}`, JSON.stringify(progress)); }, [progress, lang]);
   useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [view, active, tab]);
 
   const pct = useMemo(() => Math.round((progress.done.length + (progress.capstoneDone ? 1 : 0) + (progress.finalPassed ? 1 : 0)) / 8 * 100), [progress]);
   const patch = (p: Partial<Progress>) => setProgress(x => ({ ...x, ...p }));
+  const courseModules = lang === "es" ? modulesEs : modulesEn;
   const open = (id: number, t: "learn" | "apply" | "check" = "learn") => { setActive(id); setTab(t); setView("module"); };
   const certificateReady = progress.done.length === 6 && progress.capstoneDone && progress.finalPassed;
 
   return <div>
-    <a className="skip" href="#main">Skip to course content</a>
+    <a className="skip" href="#main">{lang === "es" ? "Saltar al contenido" : "Skip to course content"}</a>
     <header>
       <button className="brand" onClick={() => setView("home")}><b>AP</b><span><strong>Sustainable Aviation &amp; Performance</strong><small>Air Power Services learning</small></span></button>
-      <nav><button onClick={() => setView("home")}>Course</button><button onClick={() => setView("capstone")}>Final project</button><button onClick={() => setView("exam")}>Final assessment</button><button onClick={() => setView("resources")}>Resources</button></nav>
-      <button className="head-progress" onClick={() => setView("home")}>Progress <b>{pct}%</b></button>
+      <nav><button onClick={() => setView("home")}>{lang === "es" ? "Curso" : "Course"}</button><button onClick={() => setView("capstone")}>{lang === "es" ? "Proyecto final" : "Final project"}</button><button onClick={() => setView("exam")}>{lang === "es" ? "Evaluación final" : "Final assessment"}</button><button onClick={() => setView("resources")}>{lang === "es" ? "Recursos" : "Resources"}</button></nav>
+      <div className="language-switch" aria-label="Language selector"><button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>EN</button><button className={lang === "es" ? "active" : ""} onClick={() => setLang("es")}>ES</button></div>
+      <button className="head-progress" onClick={() => setView("home")}>{lang === "es" ? "Progreso" : "Progress"} <b>{pct}%</b></button>
     </header>
     <main id="main">
       {view === "home" && <>
         <section className="hero">
-          <div className="hero-copy"><div className="pills"><span>Advanced specialisation</span><span>100% online</span><span>10–12 hours</span></div>
-            <span className="eyebrow light">In-service sustainability academy</span>
-            <h1>Advanced Sustainability <em>in Air Power Services</em></h1>
-            <p>Make evidence-based operational, maintenance, digital and lifecycle decisions that improve environmental performance and resilience without compromising safety, airworthiness, security or mission readiness.</p>
-            <div className="buttons"><button className="gold" onClick={() => open(modules.find(m => !progress.done.includes(m.id))?.id || 1)}>{progress.done.length ? "Resume course" : "Start the course"} →</button></div>
-            <div className="metrics"><span><b>06</b> developed modules</span><span><b>30</b> module questions</span><span><b>07</b> guided applications</span></div>
+          <div className="hero-copy"><div className="pills"><span>{lang === "es" ? "Especialización avanzada" : "Advanced specialisation"}</span><span>100% online</span><span>10–12 {lang === "es" ? "horas" : "hours"}</span></div>
+            <span className="eyebrow light">{lang === "es" ? "Academia de sostenibilidad en servicio" : "In-service sustainability academy"}</span>
+            <h1>{lang === "es" ? "Sostenibilidad avanzada" : "Advanced Sustainability"} <em>in Air Power Services</em></h1>
+            <p>{lang === "es" ? "Toma decisiones operacionales, de mantenimiento, digitales y de ciclo de vida basadas en evidencia, mejorando el desempeño ambiental y la resiliencia sin comprometer la seguridad, la aeronavegabilidad, la protección de la información ni la disponibilidad para la misión." : "Make evidence-based operational, maintenance, digital and lifecycle decisions that improve environmental performance and resilience without compromising safety, airworthiness, security or mission readiness."}</p>
+            <div className="buttons"><button className="gold" onClick={() => open(courseModules.find(m => !progress.done.includes(m.id))?.id || 1)}>{progress.done.length ? (lang === "es" ? "Continuar el curso" : "Resume course") : (lang === "es" ? "Comenzar el curso" : "Start the course")} →</button></div>
+            <div className="metrics"><span><b>06</b> {lang === "es" ? "módulos desarrollados" : "developed modules"}</span><span><b>30</b> {lang === "es" ? "preguntas de módulo" : "module questions"}</span><span><b>07</b> {lang === "es" ? "aplicaciones guiadas" : "guided applications"}</span></div>
           </div>
           <div className="hero-graphic photo-frame"><img src="./images/hero-air-power.webp" alt="Air Power aircraft supported by maintenance and ground teams" /></div>
         </section>
         <section className="status"><div className="donut" style={{ "--p": `${pct * 3.6}deg` } as CSSProperties}><span><b>{pct}%</b><small>complete</small></span></div><div><span className="eyebrow">Your learning record</span><h2>{progress.done.length ? `${progress.done.length} of 6 modules completed` : "Your course progress starts here"}</h2><p>Progress and application responses are saved on this device. Pass all module checks, complete Orion’s guided final project and score at least 80% in the final assessment.</p></div><div className="steps"><span className={progress.done.length === 6 ? "done" : ""}>1 · Modules</span><span className={progress.capstoneDone ? "done" : ""}>2 · Final project</span><span className={progress.finalPassed ? "done" : ""}>3 · Assessment</span></div></section>
         <section className="program"><div className="section-head"><div><span className="eyebrow">High-density curriculum</span><h2>Six modules. One connected decision system.</h2></div><p>Each module combines developed theory, an Orion scenario, a saved evidence lab and an auto-graded knowledge check.</p></div>
-          <div className="module-grid">{modules.map(m => <article className="module-card" key={m.id} style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
+          <div className="module-grid">{courseModules.map(m => <article className="module-card" key={m.id} style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
             <div className="module-art"><img src={`./images/${m.image}`} alt="" /><b>{String(m.id).padStart(2, "0")}</b><span>{m.code}</span></div>
             <div className="module-copy"><div className="meta"><span>{m.time}</span><span>{progress.done.includes(m.id) ? "Completed" : "Open"}</span></div><h3>{m.title}</h3><p>{m.intro}</p><div><button onClick={() => open(m.id)}>{progress.done.includes(m.id) ? "Review module" : "Open module"} →</button></div></div>
           </article>)}</div>
@@ -421,8 +453,8 @@ export default function App() {
         <section className="orion"><div><span className="eyebrow light">Recurring applied case</span><h2>The Orion Support Unit</h2><p>Follow a fictitious twelve-aircraft support unit across operations, MRO, logistics, digital maintenance, retrofit and governance. Never enter classified, export-controlled or customer-sensitive information.</p></div></section>
       </>}
 
-      {view === "module" && <ModuleScreen m={modules[active - 1]} content={content} contentError={contentError} progress={progress} patch={patch} tab={tab} setTab={setTab} open={open} home={() => setView("home")} />}
-      {view === "capstone" && <Capstone content={content} progress={progress} patch={patch} />}
+      {view === "module" && <ModuleScreen m={courseModules[active - 1]} content={content} contentError={contentError} progress={progress} patch={patch} tab={tab} setTab={setTab} open={open} home={() => setView("home")} lang={lang} />}
+      {view === "capstone" && <Capstone content={content} progress={progress} patch={patch} lang={lang} />}
       {view === "exam" && <div className="wide"><PageHero eyebrow="Summative assessment · 30 minutes" title="Final Decision-Quality Check" copy="Eighteen questions cover boundaries, operations, MRO, digital assurance, circularity and governance. A score of 80% is required." code={`${progress.done.length}/6 modules`} />
         {progress.done.length < 6 ? <Locked title="Complete all six module checks to unlock the final assessment." /> : <><Quiz label="Final assessment" items={content?.final || []} best={progress.finalScore || undefined} complete={score => patch({ finalScore: Math.max(progress.finalScore, score), finalPassed: progress.finalPassed || score >= 80 })} />{progress.finalPassed && <section className="award"><div><span className="eyebrow light">Assessment passed</span><h2>Final knowledge requirement complete.</h2><p>Complete Orion’s final practical project to unlock the certificate.</p></div><button className="gold" disabled={!certificateReady} onClick={() => setView("certificate")}>Open certificate →</button></section>}</>}
       </div>}
@@ -444,50 +476,50 @@ function Locked({ title }: { title: string }) {
   return <section className="locked"><b>!</b><h2>{title}</h2><p>Modules can be completed in any order. Retakes are unlimited and the best score is retained.</p></section>;
 }
 
-function GuidedTool({ tool, values, save }: { tool: ToolConfig; values: Record<string, string>; save: (key: string, value: string) => void }) {
+function GuidedTool({ tool, values, save, lang }: { tool: ToolConfig; values: Record<string, string>; save: (key: string, value: string) => void; lang: Lang }) {
   const [checked, setChecked] = useState(false);
   const [showExample, setShowExample] = useState(false);
   const complete = tool.fields.every(f => (values[f.key] || "").trim().length >= (f.min || 20));
   const incomplete = tool.fields.filter(f => (values[f.key] || "").trim().length < (f.min || 20));
   return <article className="guided-tool">
-    <div className="tool-header"><span className="tool-number">Application {tool.number}</span><div><h2>{tool.title}</h2><p>{tool.purpose}</p></div></div>
-    <div className="tool-outcome"><b>What you will produce</b><p>{tool.outcome}</p></div>
+    <div className="tool-header"><span className="tool-number">{lang === "es" ? "Aplicación" : "Application"} {tool.number}</span><div><h2>{tool.title}</h2><p>{tool.purpose}</p></div></div>
+    <div className="tool-outcome"><b>{lang === "es" ? "Qué vas a producir" : "What you will produce"}</b><p>{tool.outcome}</p></div>
     <div className="tool-brief">
-      <section><h3>How to use it</h3><ol>{tool.steps.map(step => <li key={step}>{step}</li>)}</ol></section>
-      <section><h3>Orion case data</h3><ul>{tool.caseData.map(item => <li key={item}>{item}</li>)}</ul></section>
+      <section><h3>{lang === "es" ? "Cómo utilizarla" : "How to use it"}</h3><ol>{tool.steps.map(step => <li key={step}>{step}</li>)}</ol></section>
+      <section><h3>{lang === "es" ? "Datos del caso Orion" : "Orion case data"}</h3><ul>{tool.caseData.map(item => <li key={item}>{item}</li>)}</ul></section>
     </div>
-    <button className="example-toggle" onClick={() => setShowExample(v => !v)} aria-expanded={showExample}>{showExample ? "Hide" : "Show"} a worked example</button>
+    <button className="example-toggle" onClick={() => setShowExample(v => !v)} aria-expanded={showExample}>{lang === "es" ? (showExample ? "Ocultar ejemplo resuelto" : "Mostrar ejemplo resuelto") : `${showExample ? "Hide" : "Show"} a worked example`}</button>
     {showExample && <div className="worked-example">{tool.example.map(row => <div key={row.field}><b>{row.field}</b><p>{row.answer}</p></div>)}</div>}
     <div className="tool-fields">{tool.fields.map((field, index) => {
       const value = values[field.key] || "";
       const needsWork = checked && value.trim().length < (field.min || 20);
-      return <label className={needsWork ? "needs-work" : ""} key={field.key}><span><b>{String(index + 1).padStart(2, "0")} · {field.label}</b><small>{field.help}</small></span><textarea rows={4} value={value} placeholder={field.placeholder} onChange={e => { save(field.key, e.target.value); setChecked(false); }} />{needsWork && <em>Add enough detail to make this field usable in a decision. Address the guidance above.</em>}</label>;
+      return <label className={needsWork ? "needs-work" : ""} key={field.key}><span><b>{String(index + 1).padStart(2, "0")} · {field.label}</b><small>{field.help}</small></span><textarea rows={4} value={value} placeholder={field.placeholder} onChange={e => { save(field.key, e.target.value); setChecked(false); }} />{needsWork && <em>{lang === "es" ? "Añade detalle suficiente para que el campo pueda utilizarse en una decisión." : "Add enough detail to make this field usable in a decision. Address the guidance above."}</em>}</label>;
     })}</div>
-    <div className={`tool-review ${checked && complete ? "complete" : ""}`}><div><b>{checked ? complete ? "Tool complete" : `${incomplete.length} field${incomplete.length === 1 ? "" : "s"} need more evidence` : "Ready for a formative review?"}</b><p>{checked && complete ? "Your response meets the completion rules. Compare it with the worked example and refine any unsupported assumptions." : "The review checks completeness and decision quality; it does not approve technical or operational content."}</p></div><button className="primary" onClick={() => setChecked(true)}>Review my work</button></div>
+    <div className={`tool-review ${checked && complete ? "complete" : ""}`}><div><b>{lang === "es" ? (checked ? complete ? "Aplicación completa" : `${incomplete.length} campos necesitan más evidencia` : "¿Lista para una revisión formativa?") : (checked ? complete ? "Tool complete" : `${incomplete.length} field${incomplete.length === 1 ? "" : "s"} need more evidence` : "Ready for a formative review?")}</b><p>{lang === "es" ? (checked && complete ? "La respuesta cumple las reglas de finalización. Compárala con el ejemplo y revisa los supuestos." : "La revisión comprueba integridad y calidad de decisión; no aprueba contenido técnico u operacional.") : (checked && complete ? "Your response meets the completion rules. Compare it with the worked example and refine any unsupported assumptions." : "The review checks completeness and decision quality; it does not approve technical or operational content.")}</p></div><button className="primary" onClick={() => setChecked(true)}>{lang === "es" ? "Revisar mi trabajo" : "Review my work"}</button></div>
   </article>;
 }
 
-function ModuleScreen({ m, content, contentError, progress, patch, tab, setTab, open, home }: { m: typeof modules[number]; content: Parsed | null; contentError: string; progress: Progress; patch: (p: Partial<Progress>) => void; tab: "learn" | "apply" | "check"; setTab: (t: "learn" | "apply" | "check") => void; open: (n: number) => void; home: () => void }) {
+function ModuleScreen({ m, content, contentError, progress, patch, tab, setTab, open, home, lang }: { m: typeof modules[number]; content: Parsed | null; contentError: string; progress: Progress; patch: (p: Partial<Progress>) => void; tab: "learn" | "apply" | "check"; setTab: (t: "learn" | "apply" | "check") => void; open: (n: number) => void; home: () => void; lang: Lang }) {
   const lab = progress.labs[`m${m.id}`] || {};
-  const moduleTools = toolsByModule[m.id];
+  const moduleTools = (lang === "es" ? toolsByModuleEs : toolsByModule)[m.id];
   const labDone = moduleTools.every(tool => tool.fields.every(field => (lab[`t${tool.number}-${field.key}`] || "").trim().length >= (field.min || 20)));
   const save = (key: string, value: string) => patch({ labs: { ...progress.labs, [`m${m.id}`]: { ...lab, [key]: value } } });
   return <div className="module-page" style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
-    <aside><button className="back" onClick={home}>← Course overview</button><span className="eyebrow">Module {String(m.id).padStart(2, "0")}</span><h2>{m.code} · {m.title}</h2><p className="aside-help">Move from top to bottom. A tick appears when a stage is complete.</p><nav><button className={tab === "learn" ? "active" : ""} onClick={() => setTab("learn")}><b>01 · Learn</b><small>Understand the decision</small></button><button className={tab === "apply" ? "active" : ""} onClick={() => setTab("apply")}><b>02 · Apply {labDone && "✓"}</b><small>Build the Orion evidence</small></button><button className={tab === "check" ? "active" : ""} onClick={() => setTab("check")}><b>03 · Check {progress.done.includes(m.id) && "✓"}</b><small>Confirm what you learned</small></button></nav><div className="gate"><b>Always protect first</b><p>Safety · Airworthiness · Security · Mission requirements</p></div></aside>
+    <aside><button className="back" onClick={home}>← {lang === "es" ? "Vista general del curso" : "Course overview"}</button><span className="eyebrow">{lang === "es" ? "Módulo" : "Module"} {String(m.id).padStart(2, "0")}</span><h2>{m.code} · {m.title}</h2><p className="aside-help">{lang === "es" ? "Avanza de arriba abajo. Aparecerá una marca cuando completes cada etapa." : "Move from top to bottom. A tick appears when a stage is complete."}</p><nav><button className={tab === "learn" ? "active" : ""} onClick={() => setTab("learn")}><b>01 · {lang === "es" ? "Aprende" : "Learn"}</b><small>{lang === "es" ? "Comprende la decisión" : "Understand the decision"}</small></button><button className={tab === "apply" ? "active" : ""} onClick={() => setTab("apply")}><b>02 · {lang === "es" ? "Aplica" : "Apply"} {labDone && "✓"}</b><small>{lang === "es" ? "Construye la evidencia Orion" : "Build the Orion evidence"}</small></button><button className={tab === "check" ? "active" : ""} onClick={() => setTab("check")}><b>03 · {lang === "es" ? "Comprueba" : "Check"} {progress.done.includes(m.id) && "✓"}</b><small>{lang === "es" ? "Confirma lo aprendido" : "Confirm what you learned"}</small></button></nav><div className="gate"><b>{lang === "es" ? "Protege siempre primero" : "Always protect first"}</b><p>{lang === "es" ? "Seguridad · Aeronavegabilidad · Protección de la información · Misión" : "Safety · Airworthiness · Security · Mission requirements"}</p></div></aside>
     <div className="module-main"><section className="module-hero"><div><div className="pills"><span>{m.code}</span><span>{m.time}</span><span>Module {m.id} of 6</span></div><span className="module-question">Guiding question</span><h1>{m.title}</h1><p>{m.q}</p></div><div className="module-photo"><img src={`./images/${m.image}`} alt={`Operational context for ${m.title}`} /></div></section>
       <section className="module-compass"><div><span>You are here</span><b>{tab === "learn" ? "1 · Learn the reasoning" : tab === "apply" ? "2 · Apply it to Orion" : "3 · Check your understanding"}</b></div><p>{tab === "learn" ? "Read in order and complete the activities embedded in the lesson. Explanations appear after you answer." : tab === "apply" ? "Follow the numbered instructions. Open the worked example only if you need help, then complete every field." : "Select one answer for each question. Submit when all five are answered; 80% completes the module."}</p></section>
       {tab === "learn" && <section className="panel"><div className="lesson-welcome"><b>What you will be able to do</b><p>{m.intro}</p><span>Estimated time: {m.time}. You can leave and return at any time.</span></div><div className="decision"><b>Keep this rule in mind</b><p>Define the required service and pass mandatory gates before optimising environmental performance. A preferred technology is not a starting point.</p></div>{content ? <article className="prose">{content.lessons[m.id].map((block, index) => block.kind === "theory" ? <div key={index} dangerouslySetInnerHTML={{ __html: block.html }} /> : <LearningActivity key={block.activity.id} activity={block.activity} />)}<ExerciseSolutions moduleId={m.id} /></article> : <div className="loading">{contentError || "Loading developed course theory…"}</div>}<div className="next"><span><small>You have finished the explanation</small><b>Now turn the theory into an Orion evidence card.</b></span><button className="primary" onClick={() => setTab("apply")}>Continue to 02 · Apply →</button></div></section>}
-      {tab === "apply" && <section className="panel lab"><div className="section-head"><div><span className="eyebrow">Guided application · saved automatically</span><h2>{m.lab}</h2></div><p>Use the Orion case or approved non-sensitive information only. Each tool explains what to enter and provides formative feedback.</p></div>{moduleTools.map(tool => <GuidedTool key={tool.number} tool={tool} values={Object.fromEntries(tool.fields.map(field => [field.key, lab[`t${tool.number}-${field.key}`] || ""]))} save={(key, value) => save(`t${tool.number}-${key}`, value)} />)}<div className={`lab-end ${labDone ? "done" : ""}`}><span><b>{labDone ? "Application complete" : `Complete Tool ${moduleTools.map(t => t.number).join(" and Tool ")}`}</b><small>Your responses are saved automatically on this device.</small></span><button className="primary" disabled={!labDone} onClick={() => setTab("check")}>Continue to check →</button></div></section>}
-      {tab === "check" && <Quiz label={`Module ${m.id} knowledge check`} items={content?.checks[m.id] || []} best={progress.scores[`m${m.id}`]} complete={score => patch({ scores: { ...progress.scores, [`m${m.id}`]: Math.max(progress.scores[`m${m.id}`] || 0, score) }, done: score >= 80 ? Array.from(new Set([...progress.done, m.id])).sort() : progress.done })} />}
+      {tab === "apply" && <section className="panel lab"><div className="section-head"><div><span className="eyebrow">{lang === "es" ? "Aplicación guiada · guardado automático" : "Guided application · saved automatically"}</span><h2>{m.lab}</h2></div><p>{lang === "es" ? "Utiliza únicamente el caso Orion o información aprobada no sensible. Cada herramienta explica qué introducir y ofrece feedback formativo." : "Use the Orion case or approved non-sensitive information only. Each tool explains what to enter and provides formative feedback."}</p></div>{moduleTools.map(tool => <GuidedTool key={tool.number} tool={tool} lang={lang} values={Object.fromEntries(tool.fields.map(field => [field.key, lab[`t${tool.number}-${field.key}`] || ""]))} save={(key, value) => save(`t${tool.number}-${key}`, value)} />)}<div className={`lab-end ${labDone ? "done" : ""}`}><span><b>{labDone ? (lang === "es" ? "Aplicación completa" : "Application complete") : (lang === "es" ? "Completa todos los campos" : `Complete Tool ${moduleTools.map(t => t.number).join(" and Tool ")}`)}</b><small>{lang === "es" ? "Tus respuestas se guardan automáticamente en este dispositivo." : "Your responses are saved automatically on this device."}</small></span><button className="primary" disabled={!labDone} onClick={() => setTab("check")}>{lang === "es" ? "Continuar a la comprobación" : "Continue to check"} →</button></div></section>}
+      {tab === "check" && <Quiz label={lang === "es" ? `Comprobación de conocimientos · Módulo ${m.id}` : `Module ${m.id} knowledge check`} items={content?.checks[m.id] || []} best={progress.scores[`m${m.id}`]} complete={score => patch({ scores: { ...progress.scores, [`m${m.id}`]: Math.max(progress.scores[`m${m.id}`] || 0, score) }, done: score >= 80 ? Array.from(new Set([...progress.done, m.id])).sort() : progress.done })} />}
       <div className="module-nav"><button disabled={m.id === 1} onClick={() => open(m.id - 1)}>← Previous</button><span>{m.id} / 6</span><button disabled={m.id === 6} onClick={() => open(m.id + 1)}>Next →</button></div>
     </div>
   </div>;
 }
 
-function Capstone({ content, progress, patch }: { content: Parsed | null; progress: Progress; patch: (p: Partial<Progress>) => void }) {
+function Capstone({ content, progress, patch, lang }: { content: Parsed | null; progress: Progress; patch: (p: Partial<Progress>) => void; lang: Lang }) {
   const valid = progress.actions.length === 4 && progress.claim.trim().length > 20 && progress.rejection.trim().length > 20;
   const toggle = (a: string) => patch({ actions: progress.actions.includes(a) ? progress.actions.filter(x => x !== a) : progress.actions.length < 4 ? [...progress.actions, a] : progress.actions, capstoneDone: false });
-  return <div className="wide"><PageHero eyebrow="Final practical project · 60 minutes" title="Build Orion's 24-month action plan" copy="Use what you learned in the six modules to choose four realistic actions and explain why they are defensible." code={`${progress.actions.length}/4 actions selected`} />
+  return <div className="wide"><PageHero eyebrow={lang === "es" ? "Proyecto práctico final · 60 minutos" : "Final practical project · 60 minutes"} title={lang === "es" ? "Construye el plan de acción Orion a 24 meses" : "Build Orion's 24-month action plan"} copy={lang === "es" ? "Utiliza lo aprendido en los seis módulos para elegir cuatro acciones realistas y justificar por qué son defendibles." : "Use what you learned in the six modules to choose four realistic actions and explain why they are defensible."} code={`${progress.actions.length}/4 ${lang === "es" ? "acciones seleccionadas" : "actions selected"}`} />
     <section className="project-guide"><span className="eyebrow">What you need to do</span><h2>One final exercise, completed in three steps</h2><p>This is not a professional portfolio. It is a guided course exercise based on the fictitious Orion case.</p><div><article><b>1</b><span><strong>Read the Orion scenario</strong><small>Use the baseline data on the left to understand the operational and environmental problems.</small></span></article><article><b>2</b><span><strong>Select four actions</strong><small>Choose the four measures you would prioritise. One option is deliberately unsuitable and should not be selected.</small></span></article><article><b>3</b><span><strong>Explain your decision</strong><small>Write one evidence-based statement, then identify one action or claim you would reject and explain why.</small></span></article></div></section>
     <div className="cap-layout"><article className="prose source" dangerouslySetInnerHTML={{ __html: (content?.capstone || "").replaceAll("portfolio", "action plan").replaceAll("Portfolio", "Action plan") }} /><section className="builder"><div className="section-head"><div><span className="eyebrow">Step 2 · Select priorities</span><h2>Choose four priority actions</h2></div></div><p className="builder-help">Tick exactly four options. Base your choice on the Orion data and the principles covered in the modules.</p><div className="actions">{actions.map((a, i) => <label className={progress.actions.includes(a) ? "selected" : ""} key={a}><input type="checkbox" checked={progress.actions.includes(a)} disabled={!progress.actions.includes(a) && progress.actions.length === 4} onChange={() => toggle(a)} /><b>{String(i + 1).padStart(2, "0")}</b><span>{a}</span></label>)}</div><label className="field"><span>Step 3A · Write one evidence-based statement about your action plan</span><small>State the scope, baseline, method, expected result or target, and one important limitation. Do not present a target as an achieved result.</small><textarea rows={5} value={progress.claim} placeholder="Example structure: For [scope], compared with [baseline], we will... Measurement will use... A key limitation is..." onChange={e => patch({ claim: e.target.value, capstoneDone: false })} /></label><label className="field"><span>Step 3B · Identify what you would reject</span><small>Name one proposed action or statement that should not proceed, then explain which requirement it fails: evidence, safety, airworthiness, security or mission need.</small><textarea rows={5} value={progress.rejection} placeholder="I would reject... because..." onChange={e => patch({ rejection: e.target.value, capstoneDone: false })} /></label><div className={`lab-end ${progress.capstoneDone ? "done" : ""}`}><span><b>{progress.capstoneDone ? "Final project complete" : "Finish all three steps"}</b><small>Select four actions and complete both written explanations.</small></span><button className="primary" disabled={!valid} onClick={() => patch({ capstoneDone: true })}>Complete final project</button></div></section></div></div>;
 }
