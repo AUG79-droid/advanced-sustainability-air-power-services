@@ -387,7 +387,7 @@ export default function App() {
             <h1>Advanced Sustainability <em>in Air Power Services</em></h1>
             <p>Make evidence-based operational, maintenance, digital and lifecycle decisions that improve environmental performance and resilience without compromising safety, airworthiness, security or mission readiness.</p>
             <div className="buttons"><button className="gold" onClick={() => open(modules.find(m => !progress.done.includes(m.id))?.id || 1)}>{progress.done.length ? "Resume course" : "Start the course"} →</button><button className="ghost" onClick={() => setView("resources")}>Explore the toolkit</button></div>
-            <div className="metrics"><span><b>06</b> developed modules</span><span><b>30</b> module questions</span><span><b>07</b> decision tools</span></div>
+            <div className="metrics"><span><b>06</b> developed modules</span><span><b>30</b> module questions</span><span><b>07</b> guided applications</span></div>
           </div>
           <div className="hero-graphic"><Graphic /><div className="sequence"><i /> <span><small>Decision sequence</small><b>Gate → Evidence → Optimise → Verify</b></span></div></div>
         </section>
@@ -395,7 +395,7 @@ export default function App() {
         <section className="program"><div className="section-head"><div><span className="eyebrow">High-density curriculum</span><h2>Six modules. One connected decision system.</h2></div><p>Each module combines developed theory, an Orion scenario, a saved evidence lab and an auto-graded knowledge check.</p></div>
           <div className="module-grid">{modules.map(m => <article className="module-card" key={m.id} style={{ "--accent": m.accent, "--soft": m.soft } as CSSProperties}>
             <div className="module-art"><b>{String(m.id).padStart(2, "0")}</b><span>{m.code}</span><i /></div>
-            <div className="module-copy"><div className="meta"><span>{m.time}</span><span>{progress.done.includes(m.id) ? "Completed" : "Open"}</span></div><h3>{m.title}</h3><p>{m.intro}</p><div><button onClick={() => open(m.id)}>{progress.done.includes(m.id) ? "Review module" : "Open module"} →</button>{progress.scores[`m${m.id}`] !== undefined && <small>Best {progress.scores[`m${m.id}`]}%</small>}</div></div>
+            <div className="module-copy"><div className="meta"><span>{m.time}</span><span>{progress.done.includes(m.id) ? "Completed" : "Open"}</span></div><h3>{m.title}</h3><p>{m.intro}</p><div><button onClick={() => open(m.id)}>{progress.done.includes(m.id) ? "Review module" : "Open module"} →</button></div></div>
           </article>)}</div>
         </section>
         <section className="orion"><div><span className="eyebrow light">Recurring applied case</span><h2>The Orion Support Unit</h2><p>Follow a fictitious twelve-aircraft support unit across operations, MRO, logistics, digital maintenance, retrofit and governance. Never enter classified, export-controlled or customer-sensitive information.</p></div><button className="gold" onClick={() => setView("capstone")}>View capstone →</button></section>
@@ -406,7 +406,7 @@ export default function App() {
       {view === "exam" && <div className="wide"><PageHero eyebrow="Summative assessment · 30 minutes" title="Final Decision-Quality Check" copy="Eighteen questions cover boundaries, operations, MRO, digital assurance, circularity and governance. A score of 80% is required." code={`${progress.done.length}/6 modules`} />
         {progress.done.length < 6 ? <Locked title="Complete all six module checks to unlock the final assessment." /> : <><Quiz label="Final assessment" items={content?.final || []} best={progress.finalScore || undefined} complete={score => patch({ finalScore: Math.max(progress.finalScore, score), finalPassed: progress.finalPassed || score >= 80 })} />{progress.finalPassed && <section className="award"><div><span className="eyebrow light">Assessment passed</span><h2>Final knowledge requirement complete.</h2><p>Complete the Orion capstone to unlock the certificate.</p></div><button className="gold" disabled={!certificateReady} onClick={() => setView("certificate")}>Open certificate →</button></section>}</>}
       </div>}
-      {view === "resources" && <div className="wide"><PageHero eyebrow="Evidence resources" title="Glossary, source library and workbook" copy="The seven decision tools are taught and completed inside each module. Return here to trace sources or download the reusable workbook." code="39 sources" />
+      {view === "resources" && <div className="wide"><PageHero eyebrow="Evidence resources" title="Glossary, source library and workbook" copy="The seven guided applications are taught and completed inside each module. Return here to trace sources or download the reusable workbook." code="39 sources" />
         <div className="tabs resource-tabs"><button className={resourceTab === "refs" ? "active" : ""} onClick={() => setResourceTab("refs")}>Glossary & source library</button><button className={resourceTab === "files" ? "active" : ""} onClick={() => setResourceTab("files")}>Downloads</button></div>
         {resourceTab === "refs" ? <article className="prose resource" dangerouslySetInnerHTML={{ __html: content?.references || "" }} /> : <div className="downloads"><a href="./downloads/Learner_Workbook.docx" download><b>DOCX</b><span><strong>Learner Workbook</strong><small>Guided labs, reusable templates, capstone and claim check.</small></span>↓</a></div>}
       </div>}
@@ -430,7 +430,7 @@ function GuidedTool({ tool, values, save }: { tool: ToolConfig; values: Record<s
   const complete = tool.fields.every(f => (values[f.key] || "").trim().length >= (f.min || 20));
   const incomplete = tool.fields.filter(f => (values[f.key] || "").trim().length < (f.min || 20));
   return <article className="guided-tool">
-    <header><span className="tool-number">Tool {tool.number}</span><div><h2>{tool.title}</h2><p>{tool.purpose}</p></div></header>
+    <div className="tool-header"><span className="tool-number">Application {tool.number}</span><div><h2>{tool.title}</h2><p>{tool.purpose}</p></div></div>
     <div className="tool-outcome"><b>What you will produce</b><p>{tool.outcome}</p></div>
     <div className="tool-brief">
       <section><h3>How to use it</h3><ol>{tool.steps.map(step => <li key={step}>{step}</li>)}</ol></section>
