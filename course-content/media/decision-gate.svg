@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+<title id="title">The Air Power decision gate</title>
+<desc id="desc">Four sequential decision gates: safety and airworthiness; mission and customer requirements; environmental and resource performance; and cost, resilience and delivery.</desc>
+<rect width="1600" height="760" fill="#ffffff"/>
+<text x="60" y="92" font-family="Arial,Helvetica,sans-serif" font-size="47" font-weight="700" fill="#17375e">The Air Power decision gate</text>
+<text x="60" y="148" font-family="Arial,Helvetica,sans-serif" font-size="25" fill="#5b5b5b">Sustainability improves the permitted solution space; it does not bypass the first two gates.</text>
+<g font-family="Arial,Helvetica,sans-serif" text-anchor="middle">
+<rect x="60" y="305" width="330" height="160" rx="20" fill="#fff" stroke="#d93025" stroke-width="5"/>
+<text x="225" y="375" font-size="25" fill="#202124"><tspan x="225">1. Safety and</tspan><tspan x="225" dy="31">airworthiness</tspan></text>
+<rect x="455" y="305" width="330" height="160" rx="20" fill="#fff" stroke="#f0a000" stroke-width="5"/>
+<text x="620" y="375" font-size="25" fill="#202124"><tspan x="620">2. Mission and customer</tspan><tspan x="620" dy="31">requirements</tspan></text>
+<rect x="850" y="305" width="330" height="160" rx="20" fill="#fff" stroke="#16883c" stroke-width="5"/>
+<text x="1015" y="375" font-size="25" fill="#202124"><tspan x="1015">3. Environmental and</tspan><tspan x="1015" dy="31">resource performance</tspan></text>
+<rect x="1245" y="305" width="295" height="160" rx="20" fill="#fff" stroke="#1a73e8" stroke-width="5"/>
+<text x="1392" y="375" font-size="25" fill="#202124"><tspan x="1392">4. Cost, resilience</tspan><tspan x="1392" dy="31">and delivery</tspan></text>
+</g>
+<g stroke="#5f6368" stroke-width="4" fill="#5f6368">
+<line x1="390" y1="385" x2="440" y2="385"/><path d="M440 385l-15-9v18z"/>
+<line x1="785" y1="385" x2="835" y2="385"/><path d="M835 385l-15-9v18z"/>
+<line x1="1180" y1="385" x2="1230" y2="385"/><path d="M1230 385l-15-9v18z"/>
+</g>
+<g font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#5f6368" text-anchor="middle">
+<text x="415" y="356">pass</text><text x="810" y="356">optimise</text><text x="1205" y="356">balance</text>
+</g>
+<g font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#44546a">
+<text x="60" y="555" font-weight="700">Decision rule</text>
+<text x="60" y="592">Define the required service and pass mandatory gates before optimising environmental performance.</text>
+<text x="60" y="625">Any option that fails safety, airworthiness, security or authorised mission requirements must be redesigned or rejected.</text>
+</g>
+</svg>
