@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "Advanced Sustainability in Air Power Services",
-  description:
-    "A complete online specialisation in evidence-based in-service sustainability decisions for Air Power Services.",
+  title: "Aviation and Sustainability",
+  description: "Evidence-based digital course on aviation sustainability.",
   other: {
     "codex-preview": "development",
   },
@@ -21,7 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

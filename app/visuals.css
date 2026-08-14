@@ -1,0 +1,42 @@
+.learning-visual {
+  margin: 34px 0;
+}
+
+.visual-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--navy);
+  box-shadow: 0 16px 38px #0b2b3c20;
+}
+
+.visual-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.visual-frame span {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  padding: 8px 11px;
+  border: 1px solid #ffffff55;
+  border-radius: 999px;
+  background: #071b2dcc;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  backdrop-filter: blur(8px);
+}
+
+.learning-visual figcaption {
+  margin: 12px 5px 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--gold);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
