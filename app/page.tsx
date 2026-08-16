@@ -307,71 +307,80 @@ function Cover({
     bilingualModules.find((module) => !done.includes(module.id))?.id || 1;
   return (
     <main className="course-cover">
-      <section className="cover-hero">
-        <div className="cover-copy">
-          <p className="eyebrow">
-            AIR POWER SERVICES · ADVANCED DIGITAL COURSE
-          </p>
+      <section className="mission-cover">
+        <aside className="mission-index" aria-hidden="true">
+          <span>APS / COURSE FILE</span>
+          <strong>15</strong>
+          <i>2026 · REV.01</i>
+        </aside>
+
+        <div className="mission-copy">
+          <div className="mission-kicker">
+            <span>AIR POWER SERVICES</span>
+            <span>{lang === "es" ? "ESPECIALIZACIÓN AVANZADA" : "ADVANCED SPECIALISATION"}</span>
+          </div>
           <h1>
             {lang === "es" ? (
               <>
-                Ingeniería para un <em>Air Power</em> sostenible
+                Sostenibilidad
+                <em>en servicio</em>
               </>
             ) : (
               <>
-                Engineering <em>Sustainable</em> Air Power
+                In-service
+                <em>sustainability</em>
               </>
             )}
           </h1>
-          <p className="cover-lead">
+          <p className="mission-statement">
             {lang === "es"
-              ? "De la física del vuelo a las decisiones ambientales en servicio. Aplicado a A400M, Eurofighter, mantenimiento y bases operativas."
-              : "From flight physics to in-service environmental decisions. Applied to A400M, Eurofighter, maintenance and operational bases."}
+              ? "Un curso para decidir con evidencia cuando misión, seguridad, coste y desempeño ambiental comparten la misma mesa."
+              : "A course for evidence-based decisions when mission, safety, cost and environmental performance share the same table."}
           </p>
-          <div className="cover-actions">
-            <button
-              className="cover-primary"
-              onClick={() => open(nextModule)}
-            >
+          <button className="mission-start" onClick={() => open(nextModule)}>
+            <span>
               {done.length
                 ? lang === "es"
-                  ? "Continuar el curso"
-                  : "Continue course"
+                  ? "Continuar expediente"
+                  : "Continue briefing"
                 : lang === "es"
-                  ? "Comenzar el curso"
-                  : "Begin course"}{" "}
-              <span>→</span>
-            </button>
-          </div>
-          <dl className="course-facts">
-            <div>
-              <dt>15</dt>
-              <dd>{lang === "es" ? "Módulos" : "Modules"}</dd>
-            </div>
-            <div>
-              <dt>20–24 h</dt>
-              <dd>{lang === "es" ? "Duración" : "Duration"}</dd>
-            </div>
-            <div>
-              <dt>ES / EN</dt>
-              <dd>{lang === "es" ? "Idiomas" : "Languages"}</dd>
-            </div>
-          </dl>
+                  ? "Abrir expediente"
+                  : "Open briefing"}
+            </span>
+            <b>↗</b>
+          </button>
         </div>
-        <figure className="cover-art">
-          <img
-            src="/course/unique/hero-a400m-evidence-hangar.png"
-            alt="Equipo técnico de Air Power trabajando en un hangar"
-          />
+
+        <figure className="mission-orbit">
+          <div className="orbit-image">
+            <img
+              src="/course/unique/module8-eurofighter-decision-audit.png"
+              alt={
+                lang === "es"
+                  ? "Equipo de Air Power evaluando evidencias técnicas junto a un Eurofighter"
+                  : "Air Power team assessing technical evidence beside a Eurofighter"
+              }
+            />
+          </div>
           <figcaption>
-            <span>SYSTEMS · EVIDENCE · DECISIONS</span>
-            <p>
-              {lang === "es"
-                ? "El desempeño ambiental se diseña en todo el sistema, no en una única tecnología."
-                : "Environmental performance is engineered across the system, not in one technology."}
-            </p>
+            <span>DECISION ROOM / 01</span>
+            <strong>{lang === "es" ? "EVIDENCIA ANTES QUE ESLOGANES" : "EVIDENCE BEFORE CLAIMS"}</strong>
           </figcaption>
         </figure>
+
+        <div className="mission-dashboard">
+          <ol className="mission-paths">
+            <li><span>01</span>{lang === "es" ? "Medir" : "Measure"}</li>
+            <li><span>02</span>{lang === "es" ? "Operar" : "Operate"}</li>
+            <li><span>03</span>{lang === "es" ? "Extender" : "Extend"}</li>
+            <li><span>04</span>{lang === "es" ? "Rendir cuentas" : "Account"}</li>
+          </ol>
+          <dl className="mission-facts">
+            <div><dt>15</dt><dd>{lang === "es" ? "Módulos" : "Modules"}</dd></div>
+            <div><dt>20–24 h</dt><dd>{lang === "es" ? "Duración" : "Duration"}</dd></div>
+            <div><dt>ES / EN</dt><dd>{lang === "es" ? "Idiomas" : "Languages"}</dd></div>
+          </dl>
+        </div>
       </section>
       <section className="duration-proof">
         <div>
