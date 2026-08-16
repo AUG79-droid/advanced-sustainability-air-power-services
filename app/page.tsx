@@ -242,7 +242,9 @@ export default function Home() {
             </nav>
           </aside>
           <section className="content">
-            {view === "lesson" && <Lesson mid={mid} lid={lid} lang={lang} />}{" "}
+            {view === "lesson" && (
+              <Lesson key={`${mid}-${lid}`} mid={mid} lid={lid} lang={lang} />
+            )}{" "}
             {view === "case" && <CaseStudy mid={mid} lang={lang} />}{" "}
             {view === "activity" && <Activity mid={mid} lang={lang} />}{" "}
             {view === "lab" && <Lab mid={mid} lang={lang} />}{" "}
@@ -476,8 +478,11 @@ function Cover({
 }
 
 function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
+  const [depthOpen, setDepthOpen] = useState(false);
   const m = bilingualModules[mid - 1],
     l = m.lessons[lid];
+  const depthId = `advanced-theory-${mid}-${lid}`;
+
   return (
     <article className="lesson">
       <p className="eyebrow">
@@ -527,8 +532,16 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
             )}
           </section>
         ))}
-        <div className="embedded-depth-marker">
-          <span>+</span>
+        <button
+          type="button"
+          className={`embedded-depth-marker ${depthOpen ? "is-open" : ""}`}
+          aria-expanded={depthOpen}
+          aria-controls={depthId}
+          onClick={() => setDepthOpen((open) => !open)}
+        >
+          <span className="depth-toggle-icon" aria-hidden="true">
+            {depthOpen ? "−" : "+"}
+          </span>
           <div>
             <b>
               {lang === "es"
@@ -537,27 +550,38 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
             </b>
             <p>{tx(extendedTheory[m.theoryIndex].title, lang)}</p>
           </div>
+          <span className="depth-toggle-action">
+            {depthOpen
+              ? lang === "es"
+                ? "Ocultar"
+                : "Hide"
+              : lang === "es"
+                ? "Mostrar"
+                : "Show"}
+          </span>
+        </button>
+        <div id={depthId} hidden={!depthOpen}>
+          {extendedTheory[m.theoryIndex].sections
+            .filter((_, index) => index % m.lessons.length === lid)
+            .map((section, index) => (
+              <section className="embedded-depth" key={`deep-${index}`}>
+                <h2>{tx(section.heading, lang)}</h2>
+                {section.paragraphs.map((paragraph, pIndex) => (
+                  <p key={pIndex}>{tx(paragraph, lang)}</p>
+                ))}
+                <div className="reflection-prompt">
+                  <strong>
+                    {lang === "es" ? "PAUSA DE ANÁLISIS" : "ANALYSIS PAUSE"}
+                  </strong>
+                  <p>
+                    {lang === "es"
+                      ? "¿Qué dato, restricción o supuesto de tu entorno de trabajo podría cambiar esta conclusión? Anótalo antes de continuar."
+                      : "Which data point, constraint or assumption in your working environment could change this conclusion? Record it before continuing."}
+                  </p>
+                </div>
+              </section>
+            ))}
         </div>
-        {extendedTheory[m.theoryIndex].sections
-          .filter((_, index) => index % m.lessons.length === lid)
-          .map((section, index) => (
-            <section className="embedded-depth" key={`deep-${index}`}>
-              <h2>{tx(section.heading, lang)}</h2>
-              {section.paragraphs.map((paragraph, pIndex) => (
-                <p key={pIndex}>{tx(paragraph, lang)}</p>
-              ))}
-              <div className="reflection-prompt">
-                <strong>
-                  {lang === "es" ? "PAUSA DE ANÁLISIS" : "ANALYSIS PAUSE"}
-                </strong>
-                <p>
-                  {lang === "es"
-                    ? "¿Qué dato, restricción o supuesto de tu entorno de trabajo podría cambiar esta conclusión? Anótalo antes de continuar."
-                    : "Which data point, constraint or assumption in your working environment could change this conclusion? Record it before continuing."}
-                </p>
-              </div>
-            </section>
-          ))}
       </div>
     </article>
   );
