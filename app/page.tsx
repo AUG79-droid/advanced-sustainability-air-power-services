@@ -6,6 +6,7 @@ import type { LocalText } from "./course-data-bilingual";
 import { exerciseExamples } from "./exercise-examples";
 import { extendedTheory } from "./extended-theory";
 import { masterclasses, type DiagramKind } from "./masterclass-data";
+import { beginnerGuides, type BeginnerGuide } from "./beginner-guides";
 import "./visuals.css";
 type Lang = "es" | "en";
 type View =
@@ -437,7 +438,7 @@ function Cover({
           </li>
         </ol>
         <div className="content-evidence-strip">
-          <span><b>40.000+</b>{lang === "es" ? "palabras de teoría" : "theory words"}</span>
+          <span><b>45.000+</b>{lang === "es" ? "palabras de teoría" : "theory words"}</span>
           <span><b>105</b>{lang === "es" ? "diapositivas" : "slides"}</span>
           <span><b>15</b>{lang === "es" ? "casos reales documentados" : "documented real cases"}</span>
           <span><b>45</b>{lang === "es" ? "lecciones extensas" : "extended lessons"}</span>
@@ -522,6 +523,7 @@ function ConceptDiagram({
 function Presentation({ mid, lang }: { mid: number; lang: Lang }) {
   const [slideIndex, setSlideIndex] = useState(0);
   const deck = masterclasses[mid - 1];
+  const guide = beginnerGuides[mid - 1];
   const slide = deck.slides[slideIndex];
   const previous = () => setSlideIndex((current) => Math.max(0, current - 1));
   const following = () =>
@@ -553,20 +555,93 @@ function Presentation({ mid, lang }: { mid: number; lang: Lang }) {
             </figure>
           )}
           <div className="deck-copy">
-            <p className="slide-eyebrow">{tx(slide.eyebrow, lang)}</p>
-            <h1>{tx(slide.title, lang)}</h1>
-            {slide.body.map((paragraph, index) => (
-              <p key={index}>{tx(paragraph, lang)}</p>
-            ))}
-            {slide.diagram && (
-              <ConceptDiagram kind={slide.diagram.kind} nodes={slide.diagram.nodes} lang={lang} />
+            <p className="slide-eyebrow">
+              {slideIndex === 1
+                ? lang === "es" ? "02 · PASO A PASO" : "02 · STEP BY STEP"
+                : slideIndex === 2
+                  ? lang === "es" ? "03 · EN EL TRABAJO" : "03 · AT WORK"
+                  : slideIndex === 3
+                    ? lang === "es" ? "04 · EJEMPLO RESUELTO" : "04 · WORKED EXAMPLE"
+                    : tx(slide.eyebrow, lang)}
+            </p>
+            <h1>
+              {slideIndex === 0
+                ? tx(guide.plainTitle, lang)
+                : slideIndex === 1
+                  ? lang === "es" ? "¿Qué ocurre realmente?" : "What actually happens?"
+                  : slideIndex === 2
+                    ? tx(guide.scenario.title, lang)
+                    : slideIndex === 3
+                      ? tx(guide.workedExample.title, lang)
+                      : tx(slide.title, lang)}
+            </h1>
+            {slideIndex === 0 ? (
+              <>
+                <p>{tx(guide.definition, lang)}</p>
+                <p>{tx(guide.whyItMatters, lang)}</p>
+              </>
+            ) : slideIndex === 1 ? (
+              <>
+                <p>{tx(guide.definition, lang)}</p>
+                <ConceptDiagram kind="flow" nodes={guide.flow.map((item) => item.label)} lang={lang} />
+                <ol className="diagram-explained">
+                  {guide.flow.map((item, index) => (
+                    <li key={index}>
+                      <b>{tx(item.label, lang)}</b>
+                      <span>{tx(item.explanation, lang)}</span>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            ) : slideIndex === 2 ? (
+              <div className="work-scenario">
+                <span>{lang === "es" ? "IMAGINA ESTA SITUACIÓN" : "PICTURE THIS SITUATION"}</span>
+                <p>{tx(guide.scenario.story, lang)}</p>
+                <div>
+                  <strong>{lang === "es" ? "POR QUÉ IMPORTA" : "WHY IT MATTERS"}</strong>
+                  <p>{tx(guide.whyItMatters, lang)}</p>
+                </div>
+              </div>
+            ) : slideIndex === 3 ? (
+              <div className="worked-slide">
+                <p className="worked-question">{tx(guide.workedExample.question, lang)}</p>
+                <div className="worked-columns">
+                  <section>
+                    <strong>{lang === "es" ? "DATOS" : "DATA"}</strong>
+                    <ul>{guide.workedExample.given.map((item, index) => <li key={index}>{tx(item, lang)}</li>)}</ul>
+                  </section>
+                  <section>
+                    <strong>{lang === "es" ? "RAZONAMIENTO" : "REASONING"}</strong>
+                    <ol>{guide.workedExample.steps.map((item, index) => <li key={index}>{tx(item, lang)}</li>)}</ol>
+                  </section>
+                </div>
+                <div className="worked-result">
+                  <strong>{lang === "es" ? "CONCLUSIÓN" : "CONCLUSION"}</strong>
+                  <p>{tx(guide.workedExample.result, lang)}</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                {slide.body.map((paragraph, index) => (
+                  <p key={index}>{tx(paragraph, lang)}</p>
+                ))}
+                {slide.diagram && (
+                  <ConceptDiagram kind={slide.diagram.kind} nodes={slide.diagram.nodes} lang={lang} />
+                )}
+              </>
             )}
-            {slide.takeaways && (
+            {slide.takeaways && slideIndex !== 1 && slideIndex !== 2 && slideIndex !== 3 && (
               <ul className="slide-takeaways">
                 {slide.takeaways.map((item, index) => (
                   <li key={index}>{tx(item, lang)}</li>
                 ))}
               </ul>
+            )}
+            {slideIndex === 5 && (
+              <div className="decision-checklist">
+                <strong>{lang === "es" ? "QUÉ HARÍAS EN TU TRABAJO" : "WHAT YOU WOULD DO AT WORK"}</strong>
+                <ol>{guide.actions.map((action, index) => <li key={index}>{tx(action, lang)}</li>)}</ol>
+              </div>
             )}
             {slide.source && (
               <a className="case-source" href={slide.source.url} target="_blank" rel="noreferrer">
@@ -585,10 +660,78 @@ function Presentation({ mid, lang }: { mid: number; lang: Lang }) {
       </div>
       <p className="deck-instruction">
         {lang === "es"
-          ? "Recorre las siete diapositivas. Los diagramas resumen relaciones que se desarrollan con evidencia en las tres lecciones."
-          : "Review all seven slides. The diagrams summarise relationships developed with evidence in the three lessons."}
+          ? "Recorre las siete diapositivas: primero verás una situación de trabajo y un ejemplo resuelto; después podrás profundizar en las tres lecciones."
+          : "Review all seven slides: first you will see a work situation and a solved example, then you can explore the three lessons in depth."}
       </p>
     </article>
+  );
+}
+
+function BeginnerLesson({ guide, lid, lang }: { guide: BeginnerGuide; lid: number; lang: Lang }) {
+  if (lid === 0) {
+    return (
+      <section className="start-from-zero">
+        <p className="chapter-kicker">{lang === "es" ? "EMPEZAMOS DESDE CERO" : "STARTING FROM ZERO"}</p>
+        <h2>{tx(guide.plainTitle, lang)}</h2>
+        <p>{tx(guide.definition, lang)}</p>
+        <div className="why-it-matters">
+          <strong>{lang === "es" ? "¿POR QUÉ LE IMPORTA A ALGUIEN DE AERONÁUTICA?" : "WHY DOES THIS MATTER TO AN AVIATION PROFESSIONAL?"}</strong>
+          <p>{tx(guide.whyItMatters, lang)}</p>
+        </div>
+        <div className="lesson-scenario">
+          <span>{lang === "es" ? "SITUACIÓN DE TRABAJO" : "WORK SITUATION"}</span>
+          <h3>{tx(guide.scenario.title, lang)}</h3>
+          <p>{tx(guide.scenario.story, lang)}</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (lid === 1) {
+    return (
+      <section className="lesson-worked-example">
+        <p className="chapter-kicker">{lang === "es" ? "EJEMPLO EXPLICADO PASO A PASO" : "STEP-BY-STEP WORKED EXAMPLE"}</p>
+        <h2>{tx(guide.workedExample.title, lang)}</h2>
+        <p className="example-question">{tx(guide.workedExample.question, lang)}</p>
+        <div className="example-data">
+          <strong>{lang === "es" ? "LO QUE SABEMOS" : "WHAT WE KNOW"}</strong>
+          <ul>{guide.workedExample.given.map((item, index) => <li key={index}>{tx(item, lang)}</li>)}</ul>
+        </div>
+        <ol className="reasoning-steps">
+          {guide.workedExample.steps.map((step, index) => (
+            <li key={index}><span>{index + 1}</span><p>{tx(step, lang)}</p></li>
+          ))}
+        </ol>
+        <div className="example-conclusion">
+          <strong>{lang === "es" ? "QUÉ PODEMOS CONCLUIR" : "WHAT WE CAN CONCLUDE"}</strong>
+          <p>{tx(guide.workedExample.result, lang)}</p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="lesson-toolkit">
+      <p className="chapter-kicker">{lang === "es" ? "VOCABULARIO Y APLICACIÓN" : "VOCABULARY AND APPLICATION"}</p>
+      <h2>{lang === "es" ? "Los términos que necesitas, sin jerga innecesaria" : "The terms you need, without unnecessary jargon"}</h2>
+      <div className="plain-glossary">
+        {guide.glossary.map((item, index) => (
+          <article key={index}>
+            <strong>{tx(item.term, lang)}</strong>
+            <p>{tx(item.meaning, lang)}</p>
+            <small><b>{lang === "es" ? "Ejemplo: " : "Example: "}</b>{tx(item.example, lang)}</small>
+          </article>
+        ))}
+      </div>
+      <div className="common-mistake">
+        <strong>{lang === "es" ? "ERROR HABITUAL" : "COMMON MISTAKE"}</strong>
+        <p>{tx(guide.commonMistake, lang)}</p>
+      </div>
+      <div className="work-actions">
+        <strong>{lang === "es" ? "CUANDO VUELVAS A TU PUESTO" : "WHEN YOU RETURN TO WORK"}</strong>
+        <ol>{guide.actions.map((action, index) => <li key={index}>{tx(action, lang)}</li>)}</ol>
+      </div>
+    </section>
   );
 }
 
@@ -607,6 +750,7 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
       </p>
       <h1>{tx(l.title, lang)}</h1>
       <p className="lead">{tx(l.lead, lang)}</p>
+      <BeginnerLesson guide={beginnerGuides[mid - 1]} lid={lid} lang={lang} />
       {lid === 0 && (
         <section className="objectives-panel" aria-label="Learning objectives">
           <strong>
