@@ -5,10 +5,12 @@ import { bilingualModules } from "./course-data-expanded";
 import type { LocalText } from "./course-data-bilingual";
 import { exerciseExamples } from "./exercise-examples";
 import { extendedTheory } from "./extended-theory";
+import { masterclasses, type DiagramKind } from "./masterclass-data";
 import "./visuals.css";
 type Lang = "es" | "en";
 type View =
   | "cover"
+  | "presentation"
   | "lesson"
   | "briefing"
   | "case"
@@ -70,8 +72,8 @@ export default function Home() {
   const open = (id: number) => {
     setMid(id);
     setLid(0);
-    setView("lesson");
-    visit("lesson", 0, id);
+    setView("presentation");
+    visit("presentation", 0, id);
     scrollTo(0, 0);
   };
   const go = (v: View, i = 0) => {
@@ -81,7 +83,8 @@ export default function Home() {
     scrollTo({ top: 0, behavior: "smooth" });
   };
   const next = () => {
-    if (view === "lesson" && lid < m.lessons.length - 1) go("lesson", lid + 1);
+    if (view === "presentation") go("lesson", 0);
+    else if (view === "lesson" && lid < m.lessons.length - 1) go("lesson", lid + 1);
     else if (view === "lesson") go("case");
     else if (view === "case") go("activity");
     else if (view === "activity") go("lab");
@@ -99,31 +102,37 @@ export default function Home() {
     }
   };
   const steps = [
+    {
+      v: "presentation" as View,
+      i: 0,
+      t: lang === "es" ? "Presentación explicativa" : "Explainer presentation",
+      d: "8–10 min",
+    },
     ...m.lessons.map((x, i) => ({
       v: "lesson" as View,
       i,
       t: tx(x.title, lang),
-      d: "45–60 min",
+      d: "10–12 min",
     })),
-    { v: "case" as View, i: 0, t: tx(m.caseStudy.title, lang), d: "20 min" },
+    { v: "case" as View, i: 0, t: tx(m.caseStudy.title, lang), d: "10–12 min" },
     {
       v: "activity" as View,
       i: 0,
       t: tx(m.activity.title, lang),
-      d: "20 min",
+      d: "10–15 min",
     },
-    { v: "lab" as View, i: 0, t: tx(m.lab.title, lang), d: "30 min" },
+    { v: "lab" as View, i: 0, t: tx(m.lab.title, lang), d: "15–20 min" },
     {
       v: "references" as View,
       i: 0,
       t: lang === "es" ? "Fuentes y límites" : "Sources and limits",
-      d: "10 min",
+      d: "4–6 min",
     },
     {
       v: "quiz" as View,
       i: 0,
       t: lang === "es" ? "Evaluación del módulo" : "Module knowledge check",
-      d: "15 min",
+      d: "8–10 min",
     },
   ];
   const quizScore = m.questions.filter(
@@ -224,6 +233,8 @@ export default function Home() {
                   <span>
                     {s.v === "lesson"
                       ? `${mid}.${s.i + 1}`
+                      : s.v === "presentation"
+                        ? "DECK"
                       : s.v === "case"
                         ? "CASE"
                         : s.v === "activity"
@@ -243,6 +254,9 @@ export default function Home() {
             </nav>
           </aside>
           <section className="content">
+            {view === "presentation" && (
+              <Presentation key={`deck-${mid}`} mid={mid} lang={lang} />
+            )}{" "}
             {view === "lesson" && (
               <Lesson key={`${mid}-${lid}`} mid={mid} lid={lid} lang={lang} />
             )}{" "}
@@ -398,15 +412,15 @@ function Cover({
         </div>
         <ol>
           <li>
-            <b>12–14 h</b>
+            <b>6–7 h</b>
             <span>
               {lang === "es"
-                ? "Teoría y profundizaciones"
-                : "Theory and deep briefings"}
+                ? "Teoría, presentaciones y diagramas"
+                : "Theory, presentations and diagrams"}
             </span>
           </li>
           <li>
-            <b>7–8 h</b>
+            <b>10–12 h</b>
             <span>
               {lang === "es"
                 ? "Casos, actividades y 15 laboratorios"
@@ -414,7 +428,7 @@ function Cover({
             </span>
           </li>
           <li>
-            <b>2 h</b>
+            <b>3–4 h</b>
             <span>
               {lang === "es"
                 ? "Evaluaciones y reflexión"
@@ -422,6 +436,12 @@ function Cover({
             </span>
           </li>
         </ol>
+        <div className="content-evidence-strip">
+          <span><b>40.000+</b>{lang === "es" ? "palabras de teoría" : "theory words"}</span>
+          <span><b>105</b>{lang === "es" ? "diapositivas" : "slides"}</span>
+          <span><b>15</b>{lang === "es" ? "casos reales documentados" : "documented real cases"}</span>
+          <span><b>45</b>{lang === "es" ? "lecciones extensas" : "extended lessons"}</span>
+        </div>
         <div className="resource-actions">
           <button onClick={exportProgress}>
             {lang === "es" ? "Exportar progreso" : "Export progress"}
@@ -465,7 +485,7 @@ function Cover({
                   ? lang === "es"
                     ? "COMPLETADO"
                     : "COMPLETED"
-                  : `${m.duration} · ${m.lessons.length + extendedTheory[m.theoryIndex].sections.length} ${lang === "es" ? "BLOQUES TEÓRICOS" : "THEORY BLOCKS"}`}
+                  : `${m.duration} · 3 ${lang === "es" ? "LECCIONES" : "LESSONS"} · 7 ${lang === "es" ? "DIAPOSITIVAS" : "SLIDES"}`}
               </small>
               <h3>{tx(m.title, lang)}</h3>
               <p>{tx(promise(m), lang)}</p>
@@ -475,6 +495,100 @@ function Cover({
         ))}
       </section>
     </main>
+  );
+}
+
+function ConceptDiagram({
+  kind,
+  nodes,
+  lang,
+}: {
+  kind: DiagramKind;
+  nodes: LocalText[];
+  lang: Lang;
+}) {
+  return (
+    <div className={`concept-diagram diagram-${kind}`} role="img" aria-label={lang === "es" ? "Diagrama conceptual" : "Concept diagram"}>
+      {nodes.map((node, index) => (
+        <div className="diagram-node" key={index}>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <b>{tx(node, lang)}</b>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Presentation({ mid, lang }: { mid: number; lang: Lang }) {
+  const [slideIndex, setSlideIndex] = useState(0);
+  const deck = masterclasses[mid - 1];
+  const slide = deck.slides[slideIndex];
+  const previous = () => setSlideIndex((current) => Math.max(0, current - 1));
+  const following = () =>
+    setSlideIndex((current) => Math.min(deck.slides.length - 1, current + 1));
+
+  return (
+    <article className="lesson presentation-page">
+      <p className="eyebrow">
+        {lang === "es"
+          ? `MÓDULO ${mid} · PRESENTACIÓN EXPLICATIVA`
+          : `MODULE ${mid} · EXPLAINER PRESENTATION`}
+      </p>
+      <div className="deck-shell">
+        <div className="deck-progress" aria-label={lang === "es" ? "Progreso de diapositivas" : "Slide progress"}>
+          {deck.slides.map((_, index) => (
+            <button
+              key={index}
+              className={index === slideIndex ? "active" : index < slideIndex ? "seen" : ""}
+              onClick={() => setSlideIndex(index)}
+              aria-label={`${lang === "es" ? "Diapositiva" : "Slide"} ${index + 1}`}
+            />
+          ))}
+        </div>
+        <section className={`deck-slide slide-${slideIndex + 1}`}>
+          {slideIndex === 0 && (
+            <figure className="deck-hero">
+              <img src={deck.image} alt={tx(deck.imageAlt, lang)} />
+              <figcaption>APS / LEARNING BRIEF {String(mid).padStart(2, "0")}</figcaption>
+            </figure>
+          )}
+          <div className="deck-copy">
+            <p className="slide-eyebrow">{tx(slide.eyebrow, lang)}</p>
+            <h1>{tx(slide.title, lang)}</h1>
+            {slide.body.map((paragraph, index) => (
+              <p key={index}>{tx(paragraph, lang)}</p>
+            ))}
+            {slide.diagram && (
+              <ConceptDiagram kind={slide.diagram.kind} nodes={slide.diagram.nodes} lang={lang} />
+            )}
+            {slide.takeaways && (
+              <ul className="slide-takeaways">
+                {slide.takeaways.map((item, index) => (
+                  <li key={index}>{tx(item, lang)}</li>
+                ))}
+              </ul>
+            )}
+            {slide.source && (
+              <a className="case-source" href={slide.source.url} target="_blank" rel="noreferrer">
+                {lang === "es" ? "Consultar fuente primaria" : "Open primary source"}: {slide.source.label} ↗
+              </a>
+            )}
+          </div>
+          <footer className="deck-controls">
+            <span>{String(slideIndex + 1).padStart(2, "0")} / {String(deck.slides.length).padStart(2, "0")}</span>
+            <div>
+              <button onClick={previous} disabled={slideIndex === 0} aria-label={lang === "es" ? "Anterior" : "Previous"}>←</button>
+              <button onClick={following} disabled={slideIndex === deck.slides.length - 1} aria-label={lang === "es" ? "Siguiente" : "Next"}>→</button>
+            </div>
+          </footer>
+        </section>
+      </div>
+      <p className="deck-instruction">
+        {lang === "es"
+          ? "Recorre las siete diapositivas. Los diagramas resumen relaciones que se desarrollan con evidencia en las tres lecciones."
+          : "Review all seven slides. The diagrams summarise relationships developed with evidence in the three lessons."}
+      </p>
+    </article>
   );
 }
 
@@ -533,6 +647,25 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
             )}
           </section>
         ))}
+        <section className="masterclass-chapter">
+          <p className="chapter-kicker">{tx(masterclasses[mid - 1].chapters[lid].kicker, lang)}</p>
+          <h2>{tx(masterclasses[mid - 1].chapters[lid].title, lang)}</h2>
+          {masterclasses[mid - 1].chapters[lid].paragraphs.map((paragraph, index) => (
+            <p key={index}>{tx(paragraph, lang)}</p>
+          ))}
+          <div className="chapter-grid">
+            {masterclasses[mid - 1].chapters[lid].keyPoints.map((point, index) => (
+              <div key={index}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <b>{tx(point, lang)}</b>
+              </div>
+            ))}
+          </div>
+          <div className="chapter-prompt">
+            <strong>{lang === "es" ? "PREGUNTA DE TRANSFERENCIA" : "TRANSFER QUESTION"}</strong>
+            <p>{tx(masterclasses[mid - 1].chapters[lid].prompt, lang)}</p>
+          </div>
+        </section>
         <button
           type="button"
           className={`embedded-depth-marker ${depthOpen ? "is-open" : ""}`}
@@ -728,8 +861,8 @@ function References({ mid, lang }: { mid: number; lang: Lang }) {
         </strong>
         <p>
           {lang === "es"
-            ? "Los 15 informes temáticos adjuntos se utilizaron como mapas de contenido, no como autoridad automática. La auditoría de sus 496 referencias (464 únicas) identificó 247 fuentes de credibilidad baja o muy baja y 267 referencias que debían sustituirse, eliminarse o limitarse a contexto. Las cinco obras técnicas adicionales se analizaron por alcance, actualidad y trazabilidad; el contenido final prioriza normas, autoridades, informes técnicos revisados y literatura académica, y señala cuándo una fuente histórica necesita actualización."
-            : "The 15 supplied topic reports were used as content maps, not as automatic authority. The audit of their 496 reference occurrences (464 unique sources) identified 247 low or very-low credibility sources and 267 references requiring replacement, removal or context-only use. The five additional technical works were analysed for scope, currency and traceability; the final course prioritises standards, authorities, reviewed technical reports and academic literature, and flags historical sources that require updating."}
+            ? "Los 15 informes temáticos adjuntos se utilizaron como mapas de contenido, no como autoridad automática. La auditoría de sus 496 referencias (464 únicas) identificó 247 fuentes de credibilidad baja o muy baja y 267 referencias que debían sustituirse, eliminarse o limitarse a contexto. Las cinco obras técnicas adicionales se analizaron por alcance, actualidad y trazabilidad. La recopilación didáctica de 283 páginas se estudió para extraer patrones pedagógicos —clase explicativa, transcripción, esquema, pregunta y tarea—, sin copiar su redacción ni sus imágenes. El contenido final prioriza normas, autoridades, informes técnicos revisados y literatura académica, y señala cuándo una fuente histórica necesita actualización."
+            : "The 15 supplied topic reports were used as content maps, not as automatic authority. The audit of their 496 reference occurrences (464 unique sources) identified 247 low or very-low credibility sources and 267 references requiring replacement, removal or context-only use. The five additional technical works were analysed for scope, currency and traceability. The 283-page teaching compilation was studied to extract learning patterns—explainer lesson, transcript, diagram, question and assignment—without copying its wording or images. The final course prioritises standards, authorities, reviewed technical reports and academic literature, and flags historical sources that require updating."}
         </p>
       </div>
       <div className="evidence-protocol">

@@ -54,6 +54,30 @@
   font-size: 13px;
   line-height: 1.4;
 }
+.content-evidence-strip {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid #2a3940;
+  background: #2a3940;
+}
+.content-evidence-strip span {
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  padding: 14px 18px;
+  background: #10181d;
+  color: #9fb0b7;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.content-evidence-strip b {
+  color: #eef5f5;
+  font: 900 20px/1 "Courier New", monospace;
+}
 .resource-actions {
   grid-column: 2;
   display: flex;
@@ -206,6 +230,7 @@
   .duration-proof > ol {
     grid-template-columns: 1fr;
   }
+  .content-evidence-strip { grid-template-columns: 1fr 1fr; }
   .resource-actions {
     grid-column: 1;
     flex-direction: column;
