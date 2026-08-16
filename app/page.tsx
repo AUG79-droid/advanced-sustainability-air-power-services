@@ -1,10 +1,26 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- local course artwork is already optimised */
 import { useEffect, useState } from "react";
-import { bilingualModules, type LocalText } from "./course-data-bilingual";
+import { bilingualModules } from "./course-data-expanded";
+import type { LocalText } from "./course-data-bilingual";
 import { extendedTheory } from "./extended-theory";
 import "./visuals.css";
 type Lang = "es" | "en";
-type View = "cover" | "lesson" | "briefing" | "lab" | "quiz";
+type View =
+  | "cover"
+  | "lesson"
+  | "briefing"
+  | "case"
+  | "activity"
+  | "lab"
+  | "references"
+  | "quiz";
+type SavedProgress = {
+  done: number[];
+  visited: string[];
+  answers: Record<string, number>;
+};
+const STORAGE_KEY = "air-power-sustainability-v15";
 const tx = (v: LocalText | undefined, l: Lang) => v?.[l] || "";
 const short = (m: (typeof bilingualModules)[number]) => m.shortTitle || m.title;
 const promise = (m: (typeof bilingualModules)[number]) =>
@@ -16,32 +32,69 @@ export default function Home() {
     [view, setView] = useState<View>("cover"),
     [lid, setLid] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({}),
-    [done, setDone] = useState<number[]>([]);
+    [done, setDone] = useState<number[]>([]),
+    [visited, setVisited] = useState<string[]>([]),
+    [ready, setReady] = useState(false);
   const m = bilingualModules[mid - 1];
   useEffect(() => {
-    const x = localStorage.getItem("esap-done");
-    if (x) setDone(JSON.parse(x));
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as SavedProgress;
+        setDone(parsed.done || []);
+        setVisited(parsed.visited || []);
+        setAnswers(parsed.answers || {});
+      } else {
+        const legacy = localStorage.getItem("esap-done");
+        if (legacy) setDone(JSON.parse(legacy));
+      }
+    } finally {
+      setReady(true);
+    }
   }, []);
+  useEffect(() => {
+    if (!ready) return;
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ done, visited, answers } satisfies SavedProgress),
+    );
+  }, [done, visited, answers, ready]);
+  const visit = (v: View, i = 0, moduleId = mid) => {
+    if (v === "cover") return;
+    const key = `${moduleId}:${v}:${i}`;
+    setVisited((current) =>
+      current.includes(key) ? current : [...current, key],
+    );
+  };
   const open = (id: number) => {
     setMid(id);
     setLid(0);
     setView("lesson");
+    visit("lesson", 0, id);
     scrollTo(0, 0);
   };
   const go = (v: View, i = 0) => {
     setView(v);
     setLid(i);
+    visit(v, i);
     scrollTo({ top: 0, behavior: "smooth" });
   };
   const next = () => {
     if (view === "lesson" && lid < m.lessons.length - 1) go("lesson", lid + 1);
-    else if (view === "lesson") go("lab");
-    else if (view === "lab") go("quiz");
+    else if (view === "lesson") go("case");
+    else if (view === "case") go("activity");
+    else if (view === "activity") go("lab");
+    else if (view === "lab") go("references");
+    else if (view === "references") go("quiz");
     else {
+      const score = m.questions.filter(
+        (q, i) => answers[`${mid}-${i}`] === q.answer,
+      ).length;
+      if (score / m.questions.length < 0.8) return;
       const d = [...new Set([...done, mid])];
       setDone(d);
-      localStorage.setItem("esap-done", JSON.stringify(d));
-      mid < 8 ? open(mid + 1) : setView("cover");
+      if (mid < bilingualModules.length) open(mid + 1);
+      else setView("cover");
     }
   };
   const steps = [
@@ -51,7 +104,20 @@ export default function Home() {
       t: tx(x.title, lang),
       d: "45–60 min",
     })),
+    { v: "case" as View, i: 0, t: tx(m.caseStudy.title, lang), d: "20 min" },
+    {
+      v: "activity" as View,
+      i: 0,
+      t: tx(m.activity.title, lang),
+      d: "20 min",
+    },
     { v: "lab" as View, i: 0, t: tx(m.lab.title, lang), d: "30 min" },
+    {
+      v: "references" as View,
+      i: 0,
+      t: lang === "es" ? "Fuentes y límites" : "Sources and limits",
+      d: "10 min",
+    },
     {
       v: "quiz" as View,
       i: 0,
@@ -59,6 +125,10 @@ export default function Home() {
       d: "15 min",
     },
   ];
+  const quizScore = m.questions.filter(
+    (q, i) => answers[`${mid}-${i}`] === q.answer,
+  ).length;
+  const quizPassed = quizScore / m.questions.length >= 0.8;
   return (
     <div className="app digital-course">
       <header>
@@ -84,16 +154,49 @@ export default function Home() {
           <div className="header-progress">
             <small>
               {lang === "es" ? "PROGRESO" : "PROGRESS"}{" "}
-              {Math.round((done.length / 8) * 100)}%
+              {Math.round((done.length / bilingualModules.length) * 100)}%
             </small>
             <i>
-              <em style={{ width: `${(done.length / 8) * 100}%` }} />
+              <em
+                style={{ width: `${(done.length / bilingualModules.length) * 100}%` }}
+              />
             </i>
           </div>
         </div>
       </header>
       {view === "cover" ? (
-        <Cover lang={lang} done={done} open={open} />
+        <Cover
+          lang={lang}
+          done={done}
+          visited={visited}
+          open={open}
+          reset={() => {
+            if (
+              confirm(
+                lang === "es"
+                  ? "¿Reiniciar todo el progreso y las respuestas?"
+                  : "Reset all progress and answers?",
+              )
+            ) {
+              setDone([]);
+              setVisited([]);
+              setAnswers({});
+              localStorage.removeItem(STORAGE_KEY);
+            }
+          }}
+          exportProgress={() => {
+            const blob = new Blob(
+              [JSON.stringify({ done, visited, answers }, null, 2)],
+              { type: "application/json" },
+            );
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement("a");
+            anchor.href = url;
+            anchor.download = "air-power-sustainability-progress.json";
+            anchor.click();
+            URL.revokeObjectURL(url);
+          }}
+        />
       ) : (
         <main>
           <aside className="rail">
@@ -101,7 +204,9 @@ export default function Home() {
               ← {lang === "es" ? "Todos los módulos" : "All modules"}
             </button>
             <p className="eyebrow">
-              {lang === "es" ? `MÓDULO ${mid} DE 8` : `MODULE ${mid} OF 8`}
+              {lang === "es"
+                ? `MÓDULO ${mid} DE ${bilingualModules.length}`
+                : `MODULE ${mid} OF ${bilingualModules.length}`}
             </p>
             <h2>{tx(short(m), lang)}</h2>
             <nav>
@@ -118,9 +223,15 @@ export default function Home() {
                   <span>
                     {s.v === "lesson"
                       ? `${mid}.${s.i + 1}`
+                      : s.v === "case"
+                        ? "CASE"
+                        : s.v === "activity"
+                          ? "ACT"
                       : s.v === "lab"
                         ? "LAB"
-                        : "QUIZ"}
+                        : s.v === "references"
+                          ? "REF"
+                          : "QUIZ"}
                   </span>
                   <div>
                     <b>{s.t}</b>
@@ -132,7 +243,10 @@ export default function Home() {
           </aside>
           <section className="content">
             {view === "lesson" && <Lesson mid={mid} lid={lid} lang={lang} />}{" "}
+            {view === "case" && <CaseStudy mid={mid} lang={lang} />}{" "}
+            {view === "activity" && <Activity mid={mid} lang={lang} />}{" "}
             {view === "lab" && <Lab mid={mid} lang={lang} />}{" "}
+            {view === "references" && <References mid={mid} lang={lang} />}{" "}
             {view === "quiz" && (
               <Quiz
                 mid={mid}
@@ -145,7 +259,18 @@ export default function Home() {
               <button className="secondary" onClick={() => setView("cover")}>
                 {lang === "es" ? "Volver al programa" : "Back to syllabus"}
               </button>
-              <button className="primary" onClick={next}>
+              <button
+                className="primary"
+                onClick={next}
+                disabled={view === "quiz" && !quizPassed}
+                title={
+                  view === "quiz" && !quizPassed
+                    ? lang === "es"
+                      ? "Necesitas al menos un 80% para completar el módulo. Puedes cambiar tus respuestas."
+                      : "You need at least 80% to complete the module. You can change your answers."
+                    : undefined
+                }
+              >
                 {view === "quiz"
                   ? lang === "es"
                     ? "Completar y continuar"
@@ -166,12 +291,20 @@ export default function Home() {
 function Cover({
   lang,
   done,
+  visited,
   open,
+  reset,
+  exportProgress,
 }: {
   lang: Lang;
   done: number[];
+  visited: string[];
   open: (n: number) => void;
+  reset: () => void;
+  exportProgress: () => void;
 }) {
+  const nextModule =
+    bilingualModules.find((module) => !done.includes(module.id))?.id || 1;
   return (
     <main className="course-cover">
       <section className="cover-hero">
@@ -198,7 +331,7 @@ function Cover({
           <div className="cover-actions">
             <button
               className="cover-primary"
-              onClick={() => open(done.length < 8 ? done.length + 1 : 1)}
+              onClick={() => open(nextModule)}
             >
               {done.length
                 ? lang === "es"
@@ -212,11 +345,11 @@ function Cover({
           </div>
           <dl className="course-facts">
             <div>
-              <dt>8</dt>
+              <dt>15</dt>
               <dd>{lang === "es" ? "Módulos" : "Modules"}</dd>
             </div>
             <div>
-              <dt>8–10 h</dt>
+              <dt>20–24 h</dt>
               <dd>{lang === "es" ? "Duración" : "Duration"}</dd>
             </div>
             <div>
@@ -253,7 +386,7 @@ function Cover({
         </div>
         <ol>
           <li>
-            <b>3–4 h</b>
+            <b>12–14 h</b>
             <span>
               {lang === "es"
                 ? "Teoría y profundizaciones"
@@ -261,15 +394,15 @@ function Cover({
             </span>
           </li>
           <li>
-            <b>4–5 h</b>
+            <b>7–8 h</b>
             <span>
               {lang === "es"
-                ? "Ocho laboratorios aplicados"
-                : "Eight applied labs"}
+                ? "Casos, actividades y 15 laboratorios"
+                : "Cases, activities and 15 applied labs"}
             </span>
           </li>
           <li>
-            <b>1 h</b>
+            <b>2 h</b>
             <span>
               {lang === "es"
                 ? "Evaluaciones y reflexión"
@@ -278,14 +411,16 @@ function Cover({
           </li>
         </ol>
         <div className="resource-actions">
-          <a href="/downloads/Course_Master.docx" download>
-            {lang === "es"
-              ? "Descargar manual ampliado"
-              : "Download extended manual"}
-          </a>
-          <a href="/downloads/Learner_Workbook.docx" download>
-            {lang === "es" ? "Descargar workbook" : "Download workbook"}
-          </a>
+          <button onClick={exportProgress}>
+            {lang === "es" ? "Exportar progreso" : "Export progress"}
+          </button>
+          <button onClick={reset}>
+            {lang === "es" ? "Reiniciar curso" : "Reset course"}
+          </button>
+          <span>
+            {done.length}/15 {lang === "es" ? "módulos" : "modules"} ·{" "}
+            {visited.length} {lang === "es" ? "bloques visitados" : "blocks visited"}
+          </span>
         </div>
       </section>
       <section className="route-heading">
@@ -295,8 +430,8 @@ function Cover({
           </p>
           <h2>
             {lang === "es"
-              ? "Ocho módulos. Una decisión integrada."
-              : "Eight modules. One integrated decision."}
+              ? "Quince módulos. Una decisión integrada."
+              : "Fifteen modules. One integrated decision."}
           </h2>
         </div>
         <p>
@@ -318,7 +453,7 @@ function Cover({
                   ? lang === "es"
                     ? "COMPLETADO"
                     : "COMPLETED"
-                  : `${m.lessons.length + extendedTheory[m.id - 1].sections.length} ${lang === "es" ? "BLOQUES TEÓRICOS" : "THEORY BLOCKS"}`}
+                  : `${m.duration} · ${m.lessons.length + extendedTheory[m.theoryIndex].sections.length} ${lang === "es" ? "BLOQUES TEÓRICOS" : "THEORY BLOCKS"}`}
               </small>
               <h3>{tx(m.title, lang)}</h3>
               <p>{tx(promise(m), lang)}</p>
@@ -343,6 +478,18 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
       </p>
       <h1>{tx(l.title, lang)}</h1>
       <p className="lead">{tx(l.lead, lang)}</p>
+      {lid === 0 && (
+        <section className="objectives-panel" aria-label="Learning objectives">
+          <strong>
+            {lang === "es" ? "RESULTADOS DE APRENDIZAJE" : "LEARNING OUTCOMES"}
+          </strong>
+          <ul>
+            {m.objectives.map((objective, index) => (
+              <li key={index}>{tx(objective, lang)}</li>
+            ))}
+          </ul>
+        </section>
+      )}
       {lid === 0 && (
         <figure className="learning-visual">
           <div className="visual-frame">
@@ -379,10 +526,10 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
                 ? "TEORÍA AVANZADA INTEGRADA"
                 : "INTEGRATED ADVANCED THEORY"}
             </b>
-            <p>{tx(extendedTheory[mid - 1].title, lang)}</p>
+            <p>{tx(extendedTheory[m.theoryIndex].title, lang)}</p>
           </div>
         </div>
-        {extendedTheory[mid - 1].sections
+        {extendedTheory[m.theoryIndex].sections
           .filter((_, index) => index % m.lessons.length === lid)
           .map((section, index) => (
             <section className="embedded-depth" key={`deep-${index}`}>
@@ -407,47 +554,158 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
   );
 }
 
-function Briefing({ mid, lang }: { mid: number; lang: Lang }) {
-  const briefing = extendedTheory[mid - 1];
+function CaseStudy({ mid, lang }: { mid: number; lang: Lang }) {
+  const x = bilingualModules[mid - 1].caseStudy;
   return (
-    <article className="lesson deep-briefing">
+    <article className="lesson case-study">
       <p className="eyebrow">
         {lang === "es"
-          ? `MÓDULO ${mid} · TEORÍA AVANZADA`
-          : `MODULE ${mid} · ADVANCED THEORY`}
+          ? `MÓDULO ${mid} · CASO DE DECISIÓN`
+          : `MODULE ${mid} · DECISION CASE`}
       </p>
-      <h1>{tx(briefing.title, lang)}</h1>
+      <h1>{tx(x.title, lang)}</h1>
+      <p className="lead">{tx(x.setting, lang)}</p>
+      <section className="case-evidence">
+        <strong>{lang === "es" ? "EXPEDIENTE DISPONIBLE" : "AVAILABLE DOSSIER"}</strong>
+        <ul>
+          {x.evidence.map((item, index) => (
+            <li key={index}>{tx(item, lang)}</li>
+          ))}
+        </ul>
+      </section>
+      <div className="callout gold">
+        <strong>{lang === "es" ? "ENCARGO" : "ASSIGNMENT"}</strong>
+        <p>{tx(x.task, lang)}</p>
+      </div>
+      <label className="case-response">
+        <b>{lang === "es" ? "Tu recomendación" : "Your recommendation"}</b>
+        <textarea
+          rows={9}
+          defaultValue={
+            typeof window !== "undefined"
+              ? localStorage.getItem(`m${mid}-case`) || ""
+              : ""
+          }
+          placeholder={
+            lang === "es"
+              ? "Decisión, evidencia, limitaciones, condiciones y responsable…"
+              : "Decision, evidence, limitations, conditions and owner…"
+          }
+          onBlur={(event) =>
+            localStorage.setItem(`m${mid}-case`, event.target.value)
+          }
+        />
+      </label>
+    </article>
+  );
+}
+
+function Activity({ mid, lang }: { mid: number; lang: Lang }) {
+  const x = bilingualModules[mid - 1].activity;
+  return (
+    <article className="lesson activity-sheet">
+      <p className="eyebrow">
+        {lang === "es"
+          ? `MÓDULO ${mid} · ACTIVIDAD GUIADA`
+          : `MODULE ${mid} · GUIDED ACTIVITY`}
+      </p>
+      <h1>{tx(x.title, lang)}</h1>
+      <p className="lead">{tx(x.brief, lang)}</p>
+      <ol className="activity-steps">
+        {x.steps.map((step, index) => (
+          <li key={index}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <p>{tx(step, lang)}</p>
+          </li>
+        ))}
+      </ol>
+      <div className="deliverable-strip">
+        <strong>{lang === "es" ? "ENTREGABLE" : "DELIVERABLE"}</strong>
+        <p>{tx(x.deliverable, lang)}</p>
+      </div>
+      <label className="case-response">
+        <b>{lang === "es" ? "Notas de la actividad" : "Activity notes"}</b>
+        <textarea
+          rows={8}
+          defaultValue={
+            typeof window !== "undefined"
+              ? localStorage.getItem(`m${mid}-activity`) || ""
+              : ""
+          }
+          placeholder={
+            lang === "es"
+              ? "Registra tus hallazgos y la evidencia pendiente…"
+              : "Record findings and outstanding evidence…"
+          }
+          onBlur={(event) =>
+            localStorage.setItem(`m${mid}-activity`, event.target.value)
+          }
+        />
+      </label>
+    </article>
+  );
+}
+
+function References({ mid, lang }: { mid: number; lang: Lang }) {
+  const courseModule = bilingualModules[mid - 1];
+  return (
+    <article className="lesson references-page">
+      <p className="eyebrow">
+        {lang === "es"
+          ? `MÓDULO ${mid} · FUENTES Y LÍMITES`
+          : `MODULE ${mid} · SOURCES AND LIMITS`}
+      </p>
+      <h1>{lang === "es" ? "Base de evidencia" : "Evidence base"}</h1>
       <p className="lead">
         {lang === "es"
-          ? `Bloque de estudio en profundidad · ${briefing.duration}. Lee con atención los límites, ejemplos y reglas de decisión antes de realizar el laboratorio.`
-          : `In-depth study block · ${briefing.duration}. Read the boundaries, examples and decision rules carefully before completing the lab.`}
+          ? "Las fuentes se usan según su función. Las normas y documentos institucionales sostienen requisitos y métodos; los manuales y estudios aportan síntesis y casos. Toda cifra o regla debe comprobar edición, jurisdicción y aplicabilidad antes de usarse en una decisión real."
+          : "Sources are used according to purpose. Standards and institutional documents support requirements and methods; textbooks and studies provide synthesis and cases. Check edition, jurisdiction and applicability before using any figure or rule in a real decision."}
       </p>
-      <div className="study-time">
-        <span>01</span>
-        {lang === "es" ? "Lectura analítica" : "Analytical reading"}
-        <span>02</span>
-        {lang === "es" ? "Notas y reflexión" : "Notes and reflection"}
-        <span>03</span>
-        {lang === "es" ? "Aplicación al caso" : "Case application"}
+      <div className="source-audit">
+        <strong>
+          {lang === "es" ? "CÓMO SE TRATÓ EL CORPUS" : "HOW THE CORPUS WAS USED"}
+        </strong>
+        <p>
+          {lang === "es"
+            ? "Los 15 informes temáticos adjuntos se utilizaron como mapas de contenido, no como autoridad automática. La auditoría de sus 496 referencias (464 únicas) identificó 247 fuentes de credibilidad baja o muy baja y 267 referencias que debían sustituirse, eliminarse o limitarse a contexto. Las cinco obras técnicas adicionales se analizaron por alcance, actualidad y trazabilidad; el contenido final prioriza normas, autoridades, informes técnicos revisados y literatura académica, y señala cuándo una fuente histórica necesita actualización."
+            : "The 15 supplied topic reports were used as content maps, not as automatic authority. The audit of their 496 reference occurrences (464 unique sources) identified 247 low or very-low credibility sources and 267 references requiring replacement, removal or context-only use. The five additional technical works were analysed for scope, currency and traceability; the final course prioritises standards, authorities, reviewed technical reports and academic literature, and flags historical sources that require updating."}
+        </p>
       </div>
-      <div className="prose">
-        {briefing.sections.map((section, index) => (
-          <section key={index}>
-            <h2>{tx(section.heading, lang)}</h2>
-            {section.paragraphs.map((paragraph, pIndex) => (
-              <p key={pIndex}>{tx(paragraph, lang)}</p>
-            ))}
-            <div className="reflection-prompt">
-              <strong>
-                {lang === "es" ? "PAUSA DE ANÁLISIS" : "ANALYSIS PAUSE"}
-              </strong>
-              <p>
-                {lang === "es"
-                  ? "¿Qué dato, restricción o supuesto de tu entorno de trabajo podría cambiar esta conclusión? Anótalo antes de continuar."
-                  : "Which data point, constraint or assumption in your working environment could change this conclusion? Record it before continuing."}
-              </p>
+      <div className="evidence-protocol">
+        <strong>{lang === "es" ? "PROTOCOLO DEL CURSO" : "COURSE PROTOCOL"}</strong>
+        <ul>
+          <li>
+            {lang === "es"
+              ? "Ninguna cifra sin año, unidad, perímetro y fuente trazable."
+              : "No figure without year, unit, boundary and traceable source."}
+          </li>
+          <li>
+            {lang === "es"
+              ? "Ningún requisito sin jurisdicción, edición, vigencia y aplicabilidad."
+              : "No requirement without jurisdiction, edition, validity and applicability."}
+          </li>
+          <li>
+            {lang === "es"
+              ? "Ninguna afirmación sin línea base, método, limitación y responsable."
+              : "No claim without baseline, method, limitation and accountable owner."}
+          </li>
+        </ul>
+      </div>
+      <div className="reference-list">
+        {courseModule.references.map((item, index) => (
+          <article key={index}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <small>{tx(item.kind, lang)}</small>
+              <h2>{item.title}</h2>
+              <p>{tx(item.note, lang)}</p>
+              {item.url && (
+                <a href={item.url} target="_blank" rel="noreferrer">
+                  {lang === "es" ? "Abrir fuente oficial ↗" : "Open official source ↗"}
+                </a>
+              )}
             </div>
-          </section>
+          </article>
         ))}
       </div>
     </article>
@@ -533,7 +791,17 @@ function Quiz({
         {lang === "es" ? "Puntuación actual" : "Current score"}:{" "}
         <b>
           {score}/{qs.length}
-        </b>
+        </b>{" "}
+        <span>
+          · {lang === "es" ? "mínimo 80%" : "80% required"} ·{" "}
+          {score / qs.length >= 0.8
+            ? lang === "es"
+              ? "APROBADO"
+              : "PASS"
+            : lang === "es"
+              ? "EN CURSO"
+              : "IN PROGRESS"}
+        </span>
       </div>
       <div className="quiz">
         {qs.map((q, i) => {

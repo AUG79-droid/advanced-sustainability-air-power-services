@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aviation and Sustainability",
-  description: "Evidence-based digital course on aviation sustainability.",
+  title: "Advanced Sustainability in Air Power In-Service",
+  description:
+    "Bilingual, evidence-based digital course on environmental performance in Air Power In-Service and MRO.",
   other: {
     "codex-preview": "development",
   },
