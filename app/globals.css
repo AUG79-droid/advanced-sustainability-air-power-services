@@ -1535,6 +1535,83 @@ th {
   border-top: 4px solid #09a9bd;
   background: #eff5f6;
 }
+.expected-example {
+  margin: 24px 0 28px;
+  border: 1px solid #b8d7dc;
+  border-left: 5px solid #09a9bd;
+  background: #f3fafb;
+}
+.expected-example summary {
+  min-height: 72px;
+  padding: 18px 62px 18px 22px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  list-style: none;
+  cursor: pointer;
+}
+.expected-example summary::-webkit-details-marker {
+  display: none;
+}
+.expected-example summary::after {
+  content: "+";
+  width: 34px;
+  height: 34px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid #09a9bd;
+  color: #007f91;
+  font: 900 21px/1 "Courier New", monospace;
+  transform: translateY(-50%);
+}
+.expected-example[open] summary::after {
+  content: "−";
+  border-color: #ff9f1c;
+  background: #ff9f1c;
+  color: #10171b;
+}
+.expected-example summary:hover,
+.expected-example summary:focus-visible {
+  background: #e8f5f7;
+}
+.expected-example summary:focus-visible {
+  outline: 3px solid #09a9bd44;
+  outline-offset: 3px;
+}
+.expected-example summary span {
+  color: #007f91;
+  font: 900 9px/1 "Courier New", monospace;
+  letter-spacing: 0.14em;
+}
+.expected-example summary b {
+  color: #17323d;
+  font-size: 15px;
+}
+.expected-example > div {
+  padding: 22px 24px 24px;
+  border-top: 1px solid #b8d7dc;
+  animation: depth-reveal 0.25s ease-out both;
+}
+.expected-example > div p {
+  margin: 0 !important;
+  color: #273f49;
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+}
+.expected-example > div small {
+  margin-top: 18px;
+  padding-top: 14px;
+  display: block;
+  border-top: 1px dashed #b8d7dc;
+  color: #677a82;
+  font-size: 11px;
+  line-height: 1.5;
+}
 .source-audit {
   margin: 30px 0;
   padding: 26px;

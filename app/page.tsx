@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { bilingualModules } from "./course-data-expanded";
 import type { LocalText } from "./course-data-bilingual";
+import { exerciseExamples } from "./exercise-examples";
 import { extendedTheory } from "./extended-theory";
 import "./visuals.css";
 type Lang = "es" | "en";
@@ -587,8 +588,32 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
   );
 }
 
+function ExpectedExample({ text, lang }: { text: LocalText; lang: Lang }) {
+  return (
+    <details className="expected-example">
+      <summary>
+        <span>{lang === "es" ? "EJEMPLO ORIENTATIVO" : "WORKED EXAMPLE"}</span>
+        <b>
+          {lang === "es"
+            ? "Ver un resultado esperado"
+            : "View an expected result"}
+        </b>
+      </summary>
+      <div>
+        <p>{tx(text, lang)}</p>
+        <small>
+          {lang === "es"
+            ? "Referencia de estructura y nivel de detalle. No es la única respuesta válida y los datos son ilustrativos."
+            : "A reference for structure and level of detail. It is not the only valid answer and all data are illustrative."}
+        </small>
+      </div>
+    </details>
+  );
+}
+
 function CaseStudy({ mid, lang }: { mid: number; lang: Lang }) {
   const x = bilingualModules[mid - 1].caseStudy;
+  const worked = exerciseExamples[mid - 1].case;
   return (
     <article className="lesson case-study">
       <p className="eyebrow">
@@ -610,6 +635,7 @@ function CaseStudy({ mid, lang }: { mid: number; lang: Lang }) {
         <strong>{lang === "es" ? "ENCARGO" : "ASSIGNMENT"}</strong>
         <p>{tx(x.task, lang)}</p>
       </div>
+      <ExpectedExample text={worked} lang={lang} />
       <label className="case-response">
         <b>{lang === "es" ? "Tu recomendación" : "Your recommendation"}</b>
         <textarea
@@ -635,6 +661,7 @@ function CaseStudy({ mid, lang }: { mid: number; lang: Lang }) {
 
 function Activity({ mid, lang }: { mid: number; lang: Lang }) {
   const x = bilingualModules[mid - 1].activity;
+  const worked = exerciseExamples[mid - 1].activity;
   return (
     <article className="lesson activity-sheet">
       <p className="eyebrow">
@@ -656,6 +683,7 @@ function Activity({ mid, lang }: { mid: number; lang: Lang }) {
         <strong>{lang === "es" ? "ENTREGABLE" : "DELIVERABLE"}</strong>
         <p>{tx(x.deliverable, lang)}</p>
       </div>
+      <ExpectedExample text={worked} lang={lang} />
       <label className="case-response">
         <b>{lang === "es" ? "Notas de la actividad" : "Activity notes"}</b>
         <textarea
@@ -747,6 +775,7 @@ function References({ mid, lang }: { mid: number; lang: Lang }) {
 
 function Lab({ mid, lang }: { mid: number; lang: Lang }) {
   const x = bilingualModules[mid - 1].lab;
+  const worked = exerciseExamples[mid - 1].lab;
   return (
     <article className="lesson">
       <p className="eyebrow">
@@ -764,6 +793,7 @@ function Lab({ mid, lang }: { mid: number; lang: Lang }) {
             : "Complete the dossier with real or representative data. Your responses are saved in this browser."}
         </p>
       </div>
+      <ExpectedExample text={worked} lang={lang} />
       <div className="lab">
         {x.fields.map((f, i) => (
           <label key={i}>
