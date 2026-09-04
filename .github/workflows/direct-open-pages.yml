@@ -39,6 +39,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           prefix = "/advanced-sustainability-air-power-services"
+          leftovers = []
           for path in Path("out").rglob("*"):
               if not path.is_file() or path.suffix.lower() not in {".html", ".js", ".css", ".txt", ".json"}:
                   continue
@@ -49,11 +50,11 @@ jobs:
               updated = updated.replace("'/favicon.svg", f"'{prefix}/favicon.svg")
               if updated != text:
                   path.write_text(updated, encoding="utf-8")
+              if '"/course/' in updated or "'/course/" in updated or '"/favicon.svg' in updated or "'/favicon.svg" in updated:
+                  leftovers.append(str(path))
+          if leftovers:
+              raise SystemExit("Unprefixed local asset paths remain in: " + ", ".join(leftovers))
           PY
-          if grep -R --include='*.html' --include='*.js' --include='*.css' --include='*.txt' --include='*.json' -E '["'"']/course/|["'"']/favicon\.svg' out; then
-            echo "Unprefixed local asset paths remain" >&2
-            exit 1
-          fi
           touch out/.nojekyll
 
       - name: Configure Pages
