@@ -46,12 +46,18 @@ export default function Home() {
     url.searchParams.set("hubLang", next);
     window.history.replaceState({}, "", url);
     document.documentElement.lang = next;
+    document.title = next === "es"
+      ? "Sostenibilidad avanzada en Air Power In-Service"
+      : "Advanced Sustainability in Air Power In-Service";
   };
   useEffect(() => {
     const requestedLanguage = new URLSearchParams(window.location.search).get("hubLang");
     const initialLanguage: Lang = requestedLanguage === "en" ? "en" : "es";
     queueMicrotask(() => setLang(initialLanguage));
     document.documentElement.lang = initialLanguage;
+    document.title = initialLanguage === "es"
+      ? "Sostenibilidad avanzada en Air Power In-Service"
+      : "Advanced Sustainability in Air Power In-Service";
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -156,7 +162,7 @@ export default function Home() {
       <header>
         <button className="brand" onClick={() => setView("cover")}>
           <span>AP</span>
-          <b>Engineering Sustainable Air Power</b>
+          <b>{lang === "es" ? "Ingeniería para un Air Power sostenible" : "Engineering Sustainable Air Power"}</b>
         </button>
         <div className="header-tools">
           <div className="language">
@@ -348,7 +354,7 @@ function Cover({
     <main className="course-cover">
       <section className="mission-cover">
         <aside className="mission-index" aria-hidden="true">
-          <span>APS / COURSE FILE</span>
+          <span>{lang === "es" ? "APS / EXPEDIENTE DEL CURSO" : "APS / COURSE FILE"}</span>
           <strong>15</strong>
           <i>2026 · REV.01</i>
         </aside>
@@ -402,7 +408,7 @@ function Cover({
             />
           </div>
           <figcaption>
-            <span>DECISION ROOM / 01</span>
+            <span>{lang === "es" ? "SALA DE DECISIÓN / 01" : "DECISION ROOM / 01"}</span>
             <strong>{lang === "es" ? "EVIDENCIA ANTES QUE ESLOGANES" : "EVIDENCE BEFORE CLAIMS"}</strong>
           </figcaption>
         </figure>
