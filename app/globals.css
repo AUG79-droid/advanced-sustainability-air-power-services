@@ -1077,6 +1077,20 @@ th {
   background: var(--navy);
   color: #fff;
 }
+
+.hub-return {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.hub-return:hover,
+.hub-return:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
 .back-course {
   margin: 0 0 24px;
   padding: 0;

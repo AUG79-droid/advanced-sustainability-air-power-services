@@ -40,7 +40,18 @@ export default function Home() {
     [visited, setVisited] = useState<string[]>([]),
     [ready, setReady] = useState(false);
   const m = bilingualModules[mid - 1];
+  const chooseLanguage = (next: Lang) => {
+    setLang(next);
+    const url = new URL(window.location.href);
+    url.searchParams.set("hubLang", next);
+    window.history.replaceState({}, "", url);
+    document.documentElement.lang = next;
+  };
   useEffect(() => {
+    const requestedLanguage = new URLSearchParams(window.location.search).get("hubLang");
+    const initialLanguage: Lang = requestedLanguage === "en" ? "en" : "es";
+    queueMicrotask(() => setLang(initialLanguage));
+    document.documentElement.lang = initialLanguage;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -151,17 +162,27 @@ export default function Home() {
           <div className="language">
             <button
               className={lang === "es" ? "on" : ""}
-              onClick={() => setLang("es")}
+              onClick={() => chooseLanguage("es")}
+              aria-pressed={lang === "es"}
+              aria-label={lang === "es" ? "Español activo" : "Cambiar a español"}
             >
               ES
             </button>
             <button
               className={lang === "en" ? "on" : ""}
-              onClick={() => setLang("en")}
+              onClick={() => chooseLanguage("en")}
+              aria-pressed={lang === "en"}
+              aria-label={lang === "en" ? "English active" : "Switch to English"}
             >
               EN
             </button>
           </div>
+          <a
+            className="hub-return"
+            href={`https://aug79-droid.github.io/sustainability-navigator/?lang=${lang}#applications`}
+          >
+            {lang === "es" ? "VOLVER AL HUB" : "RETURN TO HUB"}
+          </a>
           <div className="header-progress">
             <small>
               {lang === "es" ? "PROGRESO" : "PROGRESS"}{" "}
