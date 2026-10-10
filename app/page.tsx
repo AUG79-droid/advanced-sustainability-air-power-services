@@ -7,6 +7,7 @@ import { exerciseExamples } from "./exercise-examples";
 import { extendedTheory } from "./extended-theory";
 import { masterclasses, type DiagramKind } from "./masterclass-data";
 import { beginnerGuides, type BeginnerGuide } from "./beginner-guides";
+import { TransferCheck } from "./transfer-check";
 import "./visuals.css";
 type Lang = "es" | "en";
 type View =
@@ -833,6 +834,7 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
           <div className="chapter-prompt">
             <strong>{lang === "es" ? "PREGUNTA DE TRANSFERENCIA" : "TRANSFER QUESTION"}</strong>
             <p>{tx(masterclasses[mid - 1].chapters[lid].prompt, lang)}</p>
+            <TransferCheck key={mid + "-" + lid} mid={mid} lid={lid} lang={lang} />
           </div>
         </section>
         <button
