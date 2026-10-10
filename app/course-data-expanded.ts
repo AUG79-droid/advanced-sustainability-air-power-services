@@ -132,7 +132,7 @@ const source = {
     "Academic synthesis — historical",
     "Síntesis académica — histórica",
     "Strong for framing contested perceptions and impact mechanisms; numerical, policy and regulatory claims require updating.",
-    "Sólida para encuadrar percepciones controvertidas y mecanismos de impacto; las cifras, políticas y normas requieren actualización.",,
+    "Sólida para encuadrar percepciones controvertidas y mecanismos de impacto; las cifras, políticas y normas requieren actualización.",
     "https://www.routledge.com/Air-Transport-and-the-Environment/Daley/p/book/9781315566320"
   ),
   maleviti: ref(
@@ -140,7 +140,7 @@ const source = {
     "Academic textbook",
     "Manual académico",
     "Systems-level foundation spanning climate, energy, airports, operations, waste, social responsibility and policy.",
-    "Base sistémica sobre clima, energía, aeropuertos, operaciones, residuos, responsabilidad social y políticas.",,
+    "Base sistémica sobre clima, energía, aeropuertos, operaciones, residuos, responsabilidad social y políticas.",
     "https://www.routledge.com/Fundamentals-of-Sustainable-Aviation/Maleviti/p/book/9781003251231"
   ),
   nlrOps: ref(
@@ -148,7 +148,7 @@ const source = {
     "Reviewed technical report",
     "Informe técnico revisado",
     "Operational catalogue with applicability cautions; civil airline measures must be re-qualified for mission, configuration and approval constraints.",
-    "Catálogo operativo con cautelas de aplicabilidad; las medidas civiles deben recalificarse según misión, configuración y autorizaciones.",,
+    "Catálogo operativo con cautelas de aplicabilidad; las medidas civiles deben recalificarse según misión, configuración y autorizaciones.",
     "https://145595289.fs1.hubspotusercontent-eu1.net/hubfs/145595289/Impact/Reports/NLR-CR-2022-238%28public%29.pdf?dl=1"
   ),
   nlrLca: ref(
@@ -156,7 +156,7 @@ const source = {
     "Technical methodology guidance",
     "Guía metodológica técnica",
     "Detailed aviation LCA framing, functional-unit, boundary, allocation, data-quality and interpretation guidance.",
-    "Guía detallada para definición, unidad funcional, alcance, asignación, calidad de datos e interpretación del ACV aeronáutico.",,
+    "Guía detallada para definición, unidad funcional, alcance, asignación, calidad de datos e interpretación del ACV aeronáutico.",
     "https://reports.nlr.nl/items/11c60715-70cf-4c59-94ee-af1599ca31f7"
   ),
   mpDoma: ref(
@@ -164,7 +164,7 @@ const source = {
     "Commissioned sector study",
     "Estudio sectorial encargado",
     "Useful MRO, production, decommissioning and circularity map; forecasts and voluntary-practice claims must be dated and independently checked.",
-    "Mapa útil de MRO, producción, retirada y circularidad; las previsiones y afirmaciones de prácticas voluntarias deben fecharse y verificarse.",,
+    "Mapa útil de MRO, producción, retirada y circularidad; las previsiones y afirmaciones de prácticas voluntarias deben fecharse y verificarse.",
     "https://www.easa.europa.eu/en/document-library/research-reports/study-assessment-environmental-sustainability-status-aviation"
   ),
 };
