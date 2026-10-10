@@ -10,6 +10,8 @@ import { beginnerGuides, type BeginnerGuide } from "./beginner-guides";
 import { TransferCheck } from "./transfer-check";
 import { NoiseDecisionCase } from "./noise-case";
 import { QuickDecisionCase } from "./quick-decision-case";
+import { quickCaseData } from "./quick-cases-data";
+import { practicePrompts } from "./quick-practice-data";
 import "./visuals.css";
 type Lang = "es" | "en";
 type View =
@@ -135,14 +137,21 @@ export default function Home() {
       t: tx(x.title, lang),
       d: "10–12 min",
     })),
-    { v: "case" as View, i: 0, t: tx(m.caseStudy.title, lang), d: "10–12 min" },
     {
-      v: "activity" as View,
-      i: 0,
-      t: tx(m.activity.title, lang),
-      d: "10–15 min",
+      v: "case" as View, i: 0,
+      t: mid === 2 ? tx(m.caseStudy.title, lang) : quickCaseData[mid]?.[lang].title || tx(m.caseStudy.title, lang),
+      d: "2 min",
     },
-    { v: "lab" as View, i: 0, t: tx(m.lab.title, lang), d: "15–20 min" },
+    {
+      v: "activity" as View, i: 0,
+      t: practicePrompts[mid]?.activity?.[lang].title || tx(m.activity.title, lang),
+      d: "2 min",
+    },
+    {
+      v: "lab" as View, i: 0,
+      t: practicePrompts[mid]?.lab?.[lang].title || tx(m.lab.title, lang),
+      d: "2 min",
+    },
     {
       v: "references" as View,
       i: 0,
@@ -923,51 +932,7 @@ function CaseStudy({ mid, lang }: { mid: number; lang: Lang }) {
 }
 
 function Activity({ mid, lang }: { mid: number; lang: Lang }) {
-  const x = bilingualModules[mid - 1].activity;
-  const worked = exerciseExamples[mid - 1].activity;
-  return (
-    <article className="lesson activity-sheet">
-      <p className="eyebrow">
-        {lang === "es"
-          ? `MÓDULO ${mid} · ACTIVIDAD GUIADA`
-          : `MODULE ${mid} · GUIDED ACTIVITY`}
-      </p>
-      <h1>{tx(x.title, lang)}</h1>
-      <p className="lead">{tx(x.brief, lang)}</p>
-      <ol className="activity-steps">
-        {x.steps.map((step, index) => (
-          <li key={index}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <p>{tx(step, lang)}</p>
-          </li>
-        ))}
-      </ol>
-      <div className="deliverable-strip">
-        <strong>{lang === "es" ? "ENTREGABLE" : "DELIVERABLE"}</strong>
-        <p>{tx(x.deliverable, lang)}</p>
-      </div>
-      <ExpectedExample text={worked} lang={lang} />
-      <label className="case-response">
-        <b>{lang === "es" ? "Notas de la actividad" : "Activity notes"}</b>
-        <textarea
-          rows={8}
-          defaultValue={
-            typeof window !== "undefined"
-              ? localStorage.getItem(`m${mid}-activity`) || ""
-              : ""
-          }
-          placeholder={
-            lang === "es"
-              ? "Registra tus hallazgos y la evidencia pendiente…"
-              : "Record findings and outstanding evidence…"
-          }
-          onBlur={(event) =>
-            localStorage.setItem(`m${mid}-activity`, event.target.value)
-          }
-        />
-      </label>
-    </article>
-  );
+  return <QuickDecisionCase key={"activity-" + mid} mid={mid} lang={lang} mode="activity" />;
 }
 
 function References({ mid, lang }: { mid: number; lang: Lang }) {
@@ -1037,52 +1002,7 @@ function References({ mid, lang }: { mid: number; lang: Lang }) {
 }
 
 function Lab({ mid, lang }: { mid: number; lang: Lang }) {
-  const x = bilingualModules[mid - 1].lab;
-  const worked = exerciseExamples[mid - 1].lab;
-  return (
-    <article className="lesson">
-      <p className="eyebrow">
-        {lang === "es"
-          ? `MÓDULO ${mid} · LABORATORIO APLICADO`
-          : `MODULE ${mid} · APPLIED LAB`}
-      </p>
-      <h1>{tx(x.title, lang)}</h1>
-      <p className="lead">{tx(x.brief, lang)}</p>
-      <div className="callout gold">
-        <strong>{lang === "es" ? "INSTRUCCIONES" : "INSTRUCTIONS"}</strong>
-        <p>
-          {lang === "es"
-            ? "Completa el expediente con datos reales o representativos. Tus respuestas se guardan en este navegador."
-            : "Complete the dossier with real or representative data. Your responses are saved in this browser."}
-        </p>
-      </div>
-      <ExpectedExample text={worked} lang={lang} />
-      <div className="lab">
-        {x.fields.map((f, i) => (
-          <label key={i}>
-            <span>{String(i + 1).padStart(2, "0")}</span>
-            <b>{tx(f, lang)}</b>
-            <textarea
-              rows={3}
-              defaultValue={
-                typeof window !== "undefined"
-                  ? localStorage.getItem(`m${mid}-lab-${i}`) || ""
-                  : ""
-              }
-              placeholder={
-                lang === "es"
-                  ? "Respuesta concreta y basada en evidencias…"
-                  : "Specific, evidence-based response…"
-              }
-              onBlur={(e) =>
-                localStorage.setItem(`m${mid}-lab-${i}`, e.target.value)
-              }
-            />
-          </label>
-        ))}
-      </div>
-    </article>
-  );
+  return <QuickDecisionCase key={"lab-" + mid} mid={mid} lang={lang} mode="lab" />;
 }
 
 function Quiz({
