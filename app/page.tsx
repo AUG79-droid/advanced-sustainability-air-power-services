@@ -878,8 +878,8 @@ function Lesson({ mid, lid, lang }: { mid: number; lid: number; lang: Lang }) {
                   </strong>
                   <p>
                     {lang === "es"
-                      ? "¿Qué dato, restricción o supuesto de tu entorno de trabajo podría cambiar esta conclusión? Anótalo antes de continuar."
-                      : "Which data point, constraint or assumption in your working environment could change this conclusion? Record it before continuing."}
+                      ? "¿Qué dato, restricción o supuesto de tu entorno de trabajo podría cambiar esta conclusión? Reflexiona sobre ello al revisar la explicación."
+                      : "Which data point, constraint or assumption in your working environment could change this conclusion? Consider it as you review the explanation."}
                   </p>
                 </div>
               </section>
