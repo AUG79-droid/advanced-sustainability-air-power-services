@@ -604,12 +604,10 @@ function Presentation({ mid, lang }: { mid: number; lang: Lang }) {
             </h1>
             {slideIndex === 0 ? (
               <>
-                <p>{tx(guide.definition, lang)}</p>
                 <p>{tx(guide.whyItMatters, lang)}</p>
               </>
             ) : slideIndex === 1 ? (
               <>
-                <p>{tx(guide.definition, lang)}</p>
                 <ConceptDiagram kind="flow" nodes={guide.flow.map((item) => item.label)} lang={lang} />
                 <ol className="diagram-explained">
                   {guide.flow.map((item, index) => (
