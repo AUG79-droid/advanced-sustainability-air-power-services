@@ -1,5 +1,67 @@
 export type QuickCase = {title: string; context: string; facts: [string, string][]; question: string; options: string[]; correct: number; explanation: string};
 export const quickCaseData: Record<number,{ es: QuickCase; en: QuickCase }> = {
+  "2": {
+  "es": {
+    "title": "¿Qué conclusiones permite el ensayo de motor?",
+    "context": "Caso ficticio. Una instalación de Eurofighter realiza 40 pruebas equivalentes en cada uno de dos periodos consecutivos de cuatro semanas. Un cambio reduce tiempo de funcionamiento, pero aumenta las pruebas por la tarde, cerca de viviendas. Todavía no se ha medido el nivel de ruido en estas viviendas.",
+    "facts": [
+      [
+        "Combustible antes / después",
+        "250 / 230 litros por prueba"
+      ],
+      [
+        "Pruebas después de las 19:00",
+        "6 / 18"
+      ],
+      [
+        "Quejas registradas por periodo",
+        "3 / 14"
+      ],
+      [
+        "Viviendas cercanas",
+        "20; exposición sin medir"
+      ]
+    ],
+    "question": "¿Puede declararse una mejora ambiental global?",
+    "options": [
+      "Sí, ha bajado el combustible.",
+      "No: comunicar el ahorro medido e investigar la exposición acústica.",
+      "No existe ninguna mejora."
+    ],
+    "correct": 1,
+    "explanation": "Hay un ahorro del 8 % de combustible por prueba, pero no se conocen las consecuencias acústicas sobre las viviendas."
+  },
+  "en": {
+    "title": "What can be concluded from the engine-test trial?",
+    "context": "Fictional case. A Eurofighter facility conducts 40 comparable tests in each of two successive four-week periods. A revised procedure cuts unnecessary engine running but shifts more tests into the evening near homes. Noise exposure at those homes has not yet been measured.",
+    "facts": [
+      [
+        "Fuel before / after",
+        "250 / 230 litres per test"
+      ],
+      [
+        "Tests after 19:00",
+        "6 / 18"
+      ],
+      [
+        "Complaints per period",
+        "3 / 14"
+      ],
+      [
+        "Nearby homes",
+        "20; exposure not measured"
+      ]
+    ],
+    "question": "Can an overall environmental improvement be claimed?",
+    "options": [
+      "Yes: fuel use is lower.",
+      "Not yet: report measured fuel saving and investigate local noise exposure.",
+      "No improvement of any kind has occurred."
+    ],
+    "correct": 1,
+    "explanation": "Fuel per test is 8% lower, but noise effects at nearby homes have not been established."
+  }
+},
   "1": {
     "es": {
       "title": "¿Podemos aprobar la electrificación del equipo de tierra?",
