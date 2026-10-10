@@ -337,7 +337,7 @@ function chapters(p: Profile): MasterclassChapter[] {
         t(`Conviene revisar cuatro grupos de factores: ${p.mechanisms.map((x) => x.es).join("; ")}. No hace falta dominar medio ambiente para empezar: basta con describir cada paso con personas de Operaciones, Ingeniería, Mantenimiento, Prevención, Compras y Medio Ambiente, y anotar qué dato confirmaría o descartaría la explicación.`, `Review four groups of factors: ${p.mechanisms.map((x) => x.en).join("; ")}. Environmental expertise is not required to begin: describe each step with people from Operations, Engineering, Maintenance, Safety, Procurement and Environment, and record which data would confirm or reject the explanation.`),
       ],
       keyPoints: p.mechanisms,
-      prompt: t(`Piensa en una tarea de tu área relacionada con ${p.name.es}. ¿Qué cambia primero, qué resultado esperas y qué podría empeorar sin darte cuenta?`, `Think of a task in your area related to ${p.name.en}. What changes first, which result do you expect and what could worsen unnoticed?`),
+      prompt: t(`Antes de proponer una mejora relacionada con ${p.name.es}, ¿qué deberías comprobar primero? Selecciona la mejor opción y comprueba por qué.`, `Before proposing an improvement related to ${p.name.en}, what should you check first? Choose the best option and review the explanation.`),
     },
     {
       title: chapterTitles[1],
@@ -348,7 +348,7 @@ function chapters(p: Profile): MasterclassChapter[] {
         t(`Los datos nunca son perfectos. En este tema, las dudas principales proceden de ${p.uncertainty.es}. En vez de inventar exactitud, usamos un rango y preguntamos: «si este supuesto cambia, ¿seguiríamos eligiendo lo mismo?». Si la respuesta es no, ese supuesto necesita un ensayo o una medición mejor antes de aprobar a gran escala.`, `Data are never perfect. In this topic, the main doubts come from ${p.uncertainty.en}. Instead of inventing precision, use a range and ask: ‘If this assumption changes, would we still choose the same option?’ If the answer is no, that assumption needs a trial or better measurement before full-scale approval.`),
       ],
       keyPoints: [t("Qué se midió y en qué unidad", "What was measured and in which unit"), t("Total y resultado por tarea", "Total and result per task"), t("Comparaciones equivalentes", "Equivalent comparisons"), t("Dudas y datos ausentes visibles", "Visible doubts and missing data")],
-      prompt: t(`Elige un indicador de tu trabajo. ¿Puedes explicar de dónde sale, qué incluye y qué conclusión no permite obtener?`, `Choose one indicator from your work. Can you explain where it comes from, what it includes and which conclusion it does not support?`),
+      prompt: t(`Antes de comparar un indicador de ${p.name.es}, ¿qué evidencias necesitarías para justificar una conclusión? Selecciona la mejor respuesta.`, `Before comparing a ${p.name.en} indicator, what evidence would justify a conclusion? Choose the best answer.`),
     },
     {
       title: chapterTitles[2],
@@ -359,7 +359,7 @@ function chapters(p: Profile): MasterclassChapter[] {
         t(`Después se verifica mediante ${p.verification.es}. «Verificar» significa volver a mirar los datos tras el cambio y comprobar también lo que podía empeorar. Si la mejora solo funciona en una configuración, estación o tipo de tarea, se conserva esa limitación. Una buena lección termina modificando la instrucción, la formación o el criterio de decisión.`, `Verification then uses ${p.verification.en}. ‘Verify’ means reviewing data after the change and also checking what could have worsened. If the improvement works only in one configuration, season or task type, that limitation remains. A good lesson ends by changing the instruction, training or decision rule.`),
       ],
       keyPoints: [t("Seguridad y misión primero", "Safety and mission first"), t("Piloto pequeño y controlado", "Small controlled pilot"), t("Resultado y efecto adverso", "Outcome and adverse effect"), t("Responsable y fecha de revisión", "Owner and review date")],
-      prompt: t(`Completa esta frase: «Aprobaría el piloto de ${p.name.es} solo si ___; lo detendría si ___; revisaría el resultado el ___».`, `Complete this sentence: ‘I would approve the ${p.name.en} pilot only if ___; I would stop it if ___; I would review the result on ___.’`),
+      prompt: t(`Imagina un piloto de cuatro semanas sobre ${p.name.es}. Selecciona cuándo lo aprobarías, en qué condiciones lo detendrías y cuándo revisarías los resultados. Después comprueba tus tres respuestas.`, `Imagine a four-week pilot on ${p.name.en}. Choose when to approve it, what should trigger stopping it and when to review the results. Then check your three answers.`),
     },
   ];
 }
