@@ -418,3 +418,102 @@ export const masterclasses: ModuleMasterclass[] = profiles.map((profile) => ({
   chapters: chapters(profile),
   slides: slides(profile),
 }));
+
+
+export type TransferExercise = {
+  context: LocalText;
+  questions: {
+    question: LocalText;
+    options: LocalText[];
+    correct: number;
+    explanation: LocalText;
+  }[];
+};
+
+export const transferExercises: TransferExercise[][] = profiles.map((p) => [
+  {
+    context: t(
+      "Para " + p.name.es + ", elige el criterio que permitiría evaluar una mejora sin perder de vista la función operativa.",
+      "For " + p.name.en + ", choose the criterion that would support an improvement without losing sight of the operational function."
+    ),
+    questions: [{
+      question: t("¿Qué deberías comprobar primero?", "What should you check first?"),
+      options: [
+        t("Que un único indicador haya mejorado, aunque desconozcamos los demás efectos.", "That one metric has improved, even if other effects are unknown."),
+        t("Que se mantiene la función, que la mejora se puede demostrar y que no se han trasladado consecuencias negativas a otra parte del sistema.", "That function is preserved, the improvement is supported by evidence and adverse effects have not shifted elsewhere."),
+        t("Que el mensaje positivo pueda publicarse cuanto antes.", "That a positive message can be published as soon as possible.")
+      ],
+      correct: 1,
+      explanation: t(
+        "La decisión debe abarcar " + p.system.es + ". El riesgo específico es que " + p.problem.es + ". Un dato ambiental aislado no descarta esa posibilidad.",
+        "The decision must cover " + p.system.en + ". The specific risk is that " + p.problem.en + ". One environmental metric alone cannot rule this out."
+      )
+    }]
+  },
+  {
+    context: t(
+      "Se está preparando una comparación antes/después en " + p.name.es + ". Identifica la evidencia mínima para interpretarla.",
+      "A before-and-after comparison is being prepared for " + p.name.en + ". Identify the minimum evidence needed to interpret it."
+    ),
+    questions: [{
+      question: t("¿Qué conjunto de datos permitiría defender mejor la conclusión?", "Which dataset best supports the conclusion?"),
+      options: [
+        t("Una cifra media sin indicar qué se midió, en qué periodo o con qué límites.", "One average without stating what was measured, over which period or within which boundary."),
+        t("Una estimación puntual que no tenga en cuenta los datos ausentes.", "A single-point estimate ignoring missing information."),
+        t("Una línea base comparable, unidades y periodos definidos, registros trazables, límites e incertidumbre explícita.", "A comparable baseline, defined units and periods, traceable records, boundaries and explicit uncertainty.")
+      ],
+      correct: 2,
+      explanation: t(
+        "Para este módulo se necesita " + p.evidence.es + ". Debe comprobarse especialmente " + p.uncertainty.es + ". Si estos datos faltan, no puede afirmarse que la variación se deba al cambio.",
+        "This module requires " + p.evidence.en + ". In particular, check " + p.uncertainty.en + ". Without that evidence, the observed change cannot safely be attributed to the intervention."
+      )
+    }]
+  },
+  {
+    context: t(
+      "ESCENARIO HIPOTÉTICO. El equipo propone un piloto de cuatro semanas sobre " + p.name.es + ". Antes de iniciarlo debe fijar su línea base, el alcance, la autoridad responsable, los requisitos de seguridad y los indicadores para detectar efectos adversos. Elige una respuesta para cada decisión.",
+      "HYPOTHETICAL SCENARIO. The team proposes a four-week pilot on " + p.name.en + ". Before starting, it must define the baseline, scope, responsible authority, safety requirements and indicators for adverse effects. Choose one answer for each decision."
+    ),
+    questions: [
+      {
+        question: t("1. Aprobaría el piloto solo si…", "1. I would approve the pilot only if…"),
+        options: [
+          t("Un dato ambiental previsto parece favorable, aunque falten autorizaciones.", "A forecast environmental figure looks favourable, even if approvals are missing."),
+          t("La seguridad y la misión están protegidas, existe una referencia comparable y el ensayo tiene límites, responsable y criterios verificables.", "Safety and mission are protected, a comparable baseline exists, and the trial has defined limits, an owner and measurable criteria."),
+          t("El equipo ya ha invertido tiempo en prepararlo.", "The team has already invested time preparing it.")
+        ],
+        correct: 1,
+        explanation: t(
+          "La aprobación es condicional, no automática. En " + p.name.es + " la medida propuesta es " + p.intervention.es + "; hay que delimitarla y proteger seguridad, función y trazabilidad antes del piloto.",
+          "Approval is conditional, not automatic. For " + p.name.en + ", the proposed action is " + p.intervention.en + "; it needs a defined scope and protected safety, function and traceability before testing."
+        )
+      },
+      {
+        question: t("2. Detendría el piloto si…", "2. I would stop the pilot if…"),
+        options: [
+          t("Se incumple un requisito de seguridad, misión o legal, o aparece un efecto adverso que supera el umbral de parada acordado.", "A safety, mission or legal requirement is breached, or an adverse effect exceeds an agreed stop threshold."),
+          t("Una medición aislada no alcanza el ahorro máximo previsto, sin comprobar la variación normal.", "One isolated reading misses the maximum predicted saving, without checking normal variation."),
+          t("Se recibe una pregunta que el equipo todavía debe analizar.", "A question is raised that the team still needs to investigate.")
+        ],
+        correct: 0,
+        explanation: t(
+          "La parada protege las condiciones no negociables. El conflicto relevante aquí es " + p.tradeoff.es + ". Los umbrales y la autoridad de parada deben acordarse antes de empezar.",
+          "Stopping protects non-negotiable conditions. The relevant trade-off here is " + p.tradeoff.en + ". Stop thresholds and authority must be agreed before the trial."
+        )
+      },
+      {
+        question: t("3. Revisaría formalmente los resultados…", "3. I would formally review the results…"),
+        options: [
+          t("Solo al final del año, aunque el piloto dure cuatro semanas.", "Only at year-end, although the pilot lasts four weeks."),
+          t("Únicamente si aparece alguna queja.", "Only if a complaint is received."),
+          t("Al terminar las cuatro semanas, comparando los indicadores con la línea base y antes si se activa un criterio de parada.", "At the end of four weeks, comparing metrics with the baseline, and earlier if a stopping condition is triggered.")
+        ],
+        correct: 2,
+        explanation: t(
+          "El plazo procede de este escenario didáctico, no de una regla universal. Para comprobar el resultado es necesario " + p.verification.es + ". Debe quedar registrada la decisión: ampliar, modificar o detener.",
+          "The timeframe belongs to this teaching scenario; it is not a universal rule. Verification requires " + p.verification.en + ". Record whether to extend, amend or stop the intervention."
+        )
+      }
+    ]
+  }
+]);
