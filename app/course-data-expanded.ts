@@ -93,20 +93,28 @@ const official = {
     "https://www.icao.int/environmental-protection/envrep2025",
   ),
   isoLca: ref(
-    "ISO 14040 and ISO 14044 — Life cycle assessment",
+    "ISO 14040 — Life cycle assessment: principles and framework",
     "Normative method",
     "Método normativo",
     "Use the applicable licensed edition for formal work; the course applies the principles, not a substitute copy of the standards.",
     "Para trabajos formales se usa la edición licenciada aplicable; el curso aplica los principios y no sustituye a las normas.",
     "https://www.iso.org/standard/37456.html",
   ),
+  iso14044: ref(
+    "ISO 14044 — Life cycle assessment: requirements and guidelines",
+    "LCA methodology standard",
+    "Norma de metodología de ACV",
+    "Official ISO publication page; consult the licensed text for detailed requirements.",
+    "Ficha oficial de ISO; consultar el texto autorizado para los requisitos detallados.",
+    "https://www.iso.org/standard/38498.html",
+  ),
   iso14001: ref(
     "ISO 14001 — Environmental management systems",
     "Management-system standard",
     "Norma de sistema de gestión",
-    "Use the edition contractually and legally applicable to the organisation and transition plan.",
-    "Usar la edición contractual y legalmente aplicable a la organización y a su plan de transición.",
-    "https://www.iso.org/iso-14001-environmental-management.html",
+    "Check which edition is applicable to the organisation and its transition plan (ISO 14001:2026 is published).",
+    "Comprobar la edición aplicable a la organización y su plan de transición (ISO 14001:2026 ya está publicada).",
+    "https://www.iso.org/standard/14001",
   ),
   icaoPubs: ref(
     "ICAO environmental publications: Annex 16 and guidance documents",
@@ -124,35 +132,40 @@ const source = {
     "Academic synthesis — historical",
     "Síntesis académica — histórica",
     "Strong for framing contested perceptions and impact mechanisms; numerical, policy and regulatory claims require updating.",
-    "Sólida para encuadrar percepciones controvertidas y mecanismos de impacto; las cifras, políticas y normas requieren actualización.",
+    "Sólida para encuadrar percepciones controvertidas y mecanismos de impacto; las cifras, políticas y normas requieren actualización.",,
+    "https://www.routledge.com/Air-Transport-and-the-Environment/Daley/p/book/9781315566320"
   ),
   maleviti: ref(
-    "Eva Maleviti, Fundamentals of Sustainable Aviation (Routledge, 2023)",
+    "Eva Maleviti, Fundamentals of Sustainable Aviation (Routledge)",
     "Academic textbook",
     "Manual académico",
     "Systems-level foundation spanning climate, energy, airports, operations, waste, social responsibility and policy.",
-    "Base sistémica sobre clima, energía, aeropuertos, operaciones, residuos, responsabilidad social y políticas.",
+    "Base sistémica sobre clima, energía, aeropuertos, operaciones, residuos, responsabilidad social y políticas.",,
+    "https://www.routledge.com/Fundamentals-of-Sustainable-Aviation/Maleviti/p/book/9781003251231"
   ),
   nlrOps: ref(
     "Royal NLR, NLR-CR-2022-238 — Compilation of operational measures to reduce fuel burn and CO2 emissions (2022)",
     "Reviewed technical report",
     "Informe técnico revisado",
     "Operational catalogue with applicability cautions; civil airline measures must be re-qualified for mission, configuration and approval constraints.",
-    "Catálogo operativo con cautelas de aplicabilidad; las medidas civiles deben recalificarse según misión, configuración y autorizaciones.",
+    "Catálogo operativo con cautelas de aplicabilidad; las medidas civiles deben recalificarse según misión, configuración y autorizaciones.",,
+    "https://145595289.fs1.hubspotusercontent-eu1.net/hubfs/145595289/Impact/Reports/NLR-CR-2022-238%28public%29.pdf?dl=1"
   ),
   nlrLca: ref(
     "NLR/DLR, Life Cycle Assessment in the Air Transport System — guidance document",
     "Technical methodology guidance",
     "Guía metodológica técnica",
     "Detailed aviation LCA framing, functional-unit, boundary, allocation, data-quality and interpretation guidance.",
-    "Guía detallada para definición, unidad funcional, alcance, asignación, calidad de datos e interpretación del ACV aeronáutico.",
+    "Guía detallada para definición, unidad funcional, alcance, asignación, calidad de datos e interpretación del ACV aeronáutico.",,
+    "https://reports.nlr.nl/items/11c60715-70cf-4c59-94ee-af1599ca31f7"
   ),
   mpDoma: ref(
     "EASA/Envisa, Assessment of the Environmental Sustainability Status in Aviation Maintenance and Production Organisations (MP Doma)",
     "Commissioned sector study",
     "Estudio sectorial encargado",
     "Useful MRO, production, decommissioning and circularity map; forecasts and voluntary-practice claims must be dated and independently checked.",
-    "Mapa útil de MRO, producción, retirada y circularidad; las previsiones y afirmaciones de prácticas voluntarias deben fecharse y verificarse.",
+    "Mapa útil de MRO, producción, retirada y circularidad; las previsiones y afirmaciones de prácticas voluntarias deben fecharse y verificarse.",,
+    "https://www.easa.europa.eu/en/document-library/research-reports/study-assessment-environmental-sustainability-status-aviation"
   ),
 };
 
@@ -340,7 +353,7 @@ const specs: ModuleSpec[] = [
       falseClaim: t("The new equipment makes A400M ground operations sustainable.", "El nuevo equipo hace sostenibles las operaciones en tierra del A400M."),
       monitor: t("Assign KPI owners, data-quality checks, exception reporting and change-triggered review.", "Asignar responsables de indicadores, controles de calidad, registro de excepciones y revisión activada por cambios."),
     },
-    references: [source.maleviti, source.nlrLca, official.eaer, official.isoLca],
+    references: [source.maleviti, source.nlrLca, official.eaer, official.isoLca, official.iso14044],
   },
   {
     id: 2,
@@ -382,7 +395,7 @@ const specs: ModuleSpec[] = [
     activity: { title: t("Inventory completeness challenge", "Reto de integridad del inventario"), brief: t("Build and challenge an inventory before calculating impacts.", "Construir y cuestionar un inventario antes de calcular impactos."), steps: [t("Draw foreground and background processes.", "Dibujar procesos de primer y segundo plano."), t("Assign data sources and quality scores.", "Asignar fuentes y puntuaciones de calidad."), t("Run one cut-off and one allocation sensitivity.", "Ejecutar una sensibilidad de corte y otra de asignación.")], deliverable: t("A model diagram, data-quality table and interpretation note.", "Un diagrama del modelo, tabla de calidad y nota de interpretación.") },
     lab: { title: t("In-Service footprint calculator specification", "Especificación de calculadora de huella In-Service"), brief: t("Specify an auditable calculation; use representative data rather than sensitive operational data.", "Especificar un cálculo auditable usando datos representativos, no sensibles."), fields: [t("Goal, audience, functional unit and reference flow", "Objetivo, audiencia, unidad funcional y flujo de referencia"), t("Boundary, exclusions and allocation rule", "Alcance, exclusiones y regla de asignación"), t("Inventory sources, factors and quality ratings", "Fuentes de inventario, factores y calidad"), t("Sensitivity result, limitation and decision implication", "Sensibilidad, limitación e implicación para la decisión")] },
     quiz: { scope: t("Define goal, intended use, functional unit, reference flow, boundary and cut-off rule.", "Definir objetivo, uso, unidad funcional, flujo de referencia, alcance y regla de corte."), evidence: t("A versioned inventory with provenance, matched factors, allocation tests and quantified uncertainty.", "Un inventario versionado con procedencia, factores ajustados, pruebas de asignación e incertidumbre cuantificada."), decision: t("Prefer the option that remains acceptable across material sensitivities after capability gates are met.", "Preferir la opción que sigue siendo aceptable en sensibilidades materiales tras superar barreras de capacidad."), falseClaim: t("The lower carbon footprint proves the option is environmentally superior in every respect.", "La menor huella de carbono demuestra que la opción es ambientalmente superior en todos los aspectos."), monitor: t("Refresh activity data, factors and assumptions at defined triggers and retain calculation lineage.", "Actualizar datos de actividad, factores y supuestos ante umbrales definidos y conservar trazabilidad del cálculo.") },
-    references: [source.nlrLca, official.isoLca, source.maleviti, official.eaer],
+    references: [source.nlrLca, official.isoLca, official.iso14044, source.maleviti, official.eaer],
   },
   {
     id: 4,
@@ -571,7 +584,7 @@ const specs: ModuleSpec[] = [
     activity: { title: t("Circular-loop challenge", "Reto de bucle circular"), brief: t("Find the highest safe retained-value route for one component.", "Encontrar la ruta de máximo valor seguro para un componente."), steps: [t("Record function, status, material and condition.", "Registrar función, estado, material y condición."), t("Test extension, repair, reuse and recovery routes.", "Probar extensión, reparación, reutilización y recuperación."), t("Compare loop burden, risk and destination.", "Comparar carga, riesgo y destino." )], deliverable: t("A component passport and route decision.", "Un pasaporte y decisión de ruta." ) },
     lab: { title: t("Circular MRO transition roadmap", "Hoja de ruta de transición MRO circular"), brief: t("Plan a controlled transition for one component, tool or support asset.", "Planificar transición controlada para un componente, herramienta o activo."), fields: [t("Function, population, status and reference supply", "Función, población, estado y suministro de referencia"), t("Circular routes and approval constraints", "Rutas circulares y restricciones"), t("Transition inputs, double running and stranded assets", "Insumos, doble operación y activos varados"), t("Decision gates, KPIs, rebound and exit trigger", "Barreras, indicadores, rebote y umbral de salida" )] },
     quiz: { scope: t("Define component population, authorised function, condition, lifecycle boundary, reference supply and transition period.", "Definir población, función, condición, alcance, suministro de referencia y transición."), evidence: t("Traceable status and condition data plus loop inventory, yield, remaining life, logistics and failure risk.", "Datos trazables de estado y condición más inventario, rendimiento, vida, logística y riesgo."), decision: t("Choose the highest-value authorised loop that remains robust, with staged transition and exit triggers.", "Elegir el bucle autorizado de mayor valor robusto, con transición y umbrales."), falseClaim: t("Reusing the component is automatically circular and lower impact.", "Reutilizar el componente es automáticamente circular y de menor impacto."), monitor: t("Track yield, remaining life, failures, logistics, material destination, double running, total demand and obsolescence.", "Seguir rendimiento, vida, fallos, logística, destino, doble operación, demanda y obsolescencia." ) },
-    references: [source.mpDoma, source.nlrLca, source.maleviti, official.isoLca],
+    references: [source.mpDoma, source.nlrLca, source.maleviti, official.isoLca, official.iso14044],
   },
   {
     id: 13,
