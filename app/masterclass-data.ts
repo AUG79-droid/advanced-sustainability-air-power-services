@@ -86,8 +86,8 @@ const profiles: Profile[] = [
   },
   {
     name: t("Huella ambiental y ACV", "Environmental footprint and LCA"),
-    image: "/course/lifecycle-visual.png",
-    imageAlt: t("Diagrama técnico de ciclo de vida aeronáutico", "Technical aviation lifecycle diagram"),
+    image: "/course/a400m-lifecycle.png",
+    imageAlt: t("A400M de Airbus Defence and Space: ciclo de vida de materiales, operaciones y mantenimiento", "Airbus Defence and Space A400M: material, operations and maintenance lifecycle"),
     system: t("materiales, fabricación, transporte, operación, mantenimiento, sustituciones y fin de vida conectados a una función definida", "materials, manufacturing, transport, operation, maintenance, replacements and end of life connected to a defined function"),
     problem: t("una huella sin unidad funcional, perímetro y reglas de asignación puede parecer exacta y ser inútil para decidir", "a footprint without a functional unit, boundary and allocation rules can look exact while being useless for decisions"),
     mechanisms: [t("flujos de energía y materiales", "energy and material flows"), t("rendimiento de procesos y desperdicio", "process yield and waste"), t("reposición y vida útil", "replacement and service life"), t("asignación, reciclaje y escenarios", "allocation, recycling and scenarios")],
