@@ -644,3 +644,115 @@
   .lesson-worked-example,
   .lesson-toolkit { padding: 24px 20px; }
 }
+
+
+/* Transfer questions: graded self-check, bilingual and keyboard accessible. */
+.chapter-prompt .transfer-selfcheck {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid #cbdbe4;
+  background: #f7fbfd;
+  color: #172e3e;
+  min-width: 0;
+}
+.chapter-prompt .transfer-selfcheck-heading strong {
+  display: block;
+  color: #17628b;
+  font: 800 11px/1.3 system-ui, sans-serif;
+  letter-spacing: .09em;
+}
+.chapter-prompt .transfer-selfcheck-heading p {
+  margin: 10px 0 18px !important;
+  color: #264457 !important;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.transfer-selfcheck-questions { display: grid; gap: 18px; }
+.transfer-selfcheck-question {
+  min-width: 0;
+  margin: 0;
+  padding: 17px;
+  border: 1px solid #d6e2e9;
+  background: #fff;
+  border-radius: 12px;
+}
+.transfer-selfcheck-question legend {
+  font: 750 15px/1.5 system-ui, sans-serif;
+  color: #112f42;
+  padding: 0 7px;
+  max-width: 100%;
+}
+.transfer-selfcheck-options { display: grid; gap: 9px; margin-top: 9px; }
+.transfer-selfcheck-option {
+  display: grid;
+  grid-template-columns: 18px 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px 14px;
+  background: #f7fafc;
+  border: 1px solid #d7e1e7;
+  border-radius: 9px;
+  color: #163447;
+  cursor: pointer;
+  font: 450 14px/1.55 system-ui, sans-serif;
+}
+.transfer-selfcheck-option:hover { border-color: #3b80a4; }
+.transfer-selfcheck-option:focus-within { outline: 2px solid #237ba5; outline-offset: 2px; }
+.transfer-selfcheck-option input { margin: 4px 0 0; accent-color: #165f86; }
+.transfer-selfcheck-letter { color: #365b70; font-weight: 800; }
+.transfer-selfcheck-option.is-selected { border-color: #17628b; background: #e8f4fa; }
+.transfer-selfcheck-option.is-correct { border-color: #15834c; background: #eaf8ee; }
+.transfer-selfcheck-option.is-incorrect { border-color: #bd523e; background: #fff0eb; }
+.transfer-selfcheck-feedback {
+  margin-top: 12px;
+  border-left: 4px solid #168153;
+  padding: 12px 14px;
+  background: #eaf7ed;
+  color: #173e2d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.transfer-selfcheck-feedback.is-incorrect {
+  border-color: #bb583c;
+  background: #fff0e9;
+  color: #573226;
+}
+.chapter-prompt .transfer-selfcheck-feedback strong {
+  display: block;
+  margin-bottom: 6px;
+  font: 800 14px/1.5 system-ui, sans-serif;
+  color: inherit;
+  letter-spacing: 0;
+}
+.chapter-prompt .transfer-selfcheck-feedback p { margin: 0 !important; color: inherit !important; font-size: 14px; }
+.transfer-selfcheck-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 22px; }
+.transfer-selfcheck-actions button {
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 18px;
+  min-height: 45px;
+  background: #123c59;
+  color: white;
+  font: 750 14px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+}
+.transfer-selfcheck-actions button:disabled { opacity: .45; cursor: not-allowed; }
+.transfer-selfcheck-actions .transfer-selfcheck-retry { background: #e2edf2; color: #173f57; }
+.transfer-selfcheck-actions small { color: #536d7a; font-size: 12px; }
+.chapter-prompt .transfer-selfcheck-result {
+  margin: 16px 0 0 !important;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  color: #694517 !important;
+  background: #fff0d9;
+}
+.chapter-prompt .transfer-selfcheck-result.all-correct { color: #165136 !important; background: #e3f5e9; }
+@media(max-width: 640px) {
+  .chapter-prompt { padding: 15px; }
+  .chapter-prompt .transfer-selfcheck { padding: 14px; }
+  .transfer-selfcheck-question { padding: 11px; }
+  .transfer-selfcheck-option { padding: 10px; grid-template-columns: 18px 18px minmax(0,1fr); gap: 8px; }
+}
