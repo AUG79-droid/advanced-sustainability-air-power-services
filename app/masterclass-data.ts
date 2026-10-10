@@ -517,3 +517,54 @@ export const transferExercises: TransferExercise[][] = profiles.map((p) => [
     ]
   }
 ]);
+
+
+
+/* The perception-and-impact pilot uses a quantified local-noise scenario rather than generic gates. */
+transferExercises[1][2] = {
+  context: t(
+    "CASO DIDÁCTICO. Un centro realiza 40 pruebas de motor en cuatro semanas. En la referencia, 6 pruebas ocurrían después de las 19:00 y se recibieron 3 quejas de residentes próximos. La nueva propuesta pretende ahorrar un 8 % de combustible, pero concentraría 18 pruebas después de las 19:00; hay 20 viviendas cercanas potencialmente afectadas. El equipo plantea un piloto controlado de cuatro semanas. Elige las condiciones de aprobación, parada y revisión.",
+    "TEACHING SCENARIO. A facility performs 40 engine tests over four weeks. At baseline, 6 tests occurred after 19:00 and 3 complaints were received from nearby residents. A proposed change aims to save 8% fuel but would concentrate 18 tests after 19:00; 20 nearby homes may be affected. The team proposes a controlled four-week pilot. Choose the approval, stopping and review conditions."
+  ),
+  questions: [
+    {
+      question: t("1. ¿Con qué condición aprobarías el piloto?", "1. Under which condition would you approve the pilot?"),
+      options: [
+        t("Con el ahorro estimado del 8 % basta, porque el ruido medio no ha subido.", "The estimated 8% fuel saving is enough because average noise has not increased."),
+        t("Solo con las pruebas técnicas autorizadas, una referencia acústica y horaria definida, seguimiento en las viviendas y una alternativa para evitar concentrar 18 pruebas por la tarde.", "Only with authorised technical checks, a defined noise and timing baseline, monitoring at affected homes and an alternative avoiding concentration of 18 evening tests."),
+        t("Con que las quejas no se publiquen durante el ensayo.", "Provided complaints are not published during the trial.")
+      ],
+      correct: 1,
+      explanation: t(
+        "El ahorro de combustible no permite ignorar el horario ni la distribución de las molestias. Antes de aprobar hay que comprobar la seguridad operativa y cómo cambia la exposición de las 20 viviendas; un promedio no sustituye esos datos.",
+        "Fuel saving cannot override timing or distribution of disturbance. Before approval, verify operational safety and how exposure changes at the 20 homes; an average cannot replace those data."
+      )
+    },
+    {
+      question: t("2. ¿Qué justificaría detener o modificar inmediatamente el piloto?", "2. What would justify stopping or immediately changing the pilot?"),
+      options: [
+        t("Una comprobación técnica obligatoria falla, se supera un límite aplicable o la exposición supera un umbral de parada fijado antes del piloto.", "A required technical check fails, an applicable limit is exceeded or exposure breaches a stopping threshold agreed before the pilot."),
+        t("Un residente pide más información sobre los horarios.", "A resident asks for more information about test timings."),
+        t("El consumo no alcanza exactamente el 8 % previsto en una sola prueba.", "One test does not achieve exactly the forecast 8% saving.")
+      ],
+      correct: 0,
+      explanation: t(
+        "Los criterios de parada deben establecerse antes del ensayo: seguridad y cumplimiento, y un umbral medible de ruido, frecuencia u horario en las viviendas. Una consulta no implica automáticamente incumplimiento, aunque requiere respuesta.",
+        "Stopping rules must be set before testing: safety and compliance, plus a measurable noise, frequency or timing threshold at homes. A request for information is not automatically a breach, though it must be addressed."
+      )
+    },
+    {
+      question: t("3. ¿Cuándo y con qué datos revisarías el resultado?", "3. When and using which data would you review the outcome?"),
+      options: [
+        t("Al cabo de un año, usando solo los litros de combustible consumidos.", "After one year, using only litres of fuel consumed."),
+        t("Solo si se reciben más de 14 quejas.", "Only if more than 14 complaints are received."),
+        t("Con seguimiento durante el piloto y revisión formal a las cuatro semanas: combustible por prueba comparable, número y horario de pruebas, ruido en viviendas, quejas y posibles cambios en el canal de comunicación.", "Monitor throughout the pilot and formally review at four weeks: fuel per comparable test, number and timing of tests, noise at homes, complaints and any changes to complaint reporting.")
+      ],
+      correct: 2,
+      explanation: t(
+        "La revisión al final de las cuatro semanas procede del plazo acordado en este ejercicio. El resultado debe distinguir el ahorro medido de la exposición acústica y de las molestias declaradas; ni una media ni el número de quejas bastan por sí solos para explicar la causa.",
+        "The four-week review follows the timeframe set in this exercise. Distinguish measured fuel savings, noise exposure and reported disturbance; neither an average nor complaint counts alone establish causation."
+      )
+    }
+  ]
+};
