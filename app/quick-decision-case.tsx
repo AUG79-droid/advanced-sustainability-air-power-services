@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { quickCaseData } from "./quick-cases-data";
+import { practicePrompts } from "./quick-practice-data";
 
 type Lang = "es" | "en";
 
-export function QuickDecisionCase({ mid, lang }: { mid: number; lang: Lang }) {
+export function QuickDecisionCase({ mid, lang, mode = "case" }: { mid: number; lang: Lang; mode?: "case" | "activity" | "lab" }) {
   const [selected, setSelected] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
-  const exercise = quickCaseData[mid]?.[lang];
-  if (!exercise) return null;
+  const scenario = quickCaseData[mid]?.[lang];
+  const exercise = mode === "case" ? scenario : practicePrompts[mid]?.[mode]?.[lang];
+  if (!exercise || !scenario) return null;
 
   const es = lang === "es";
   const correct = selected === exercise.correct;
@@ -21,17 +23,19 @@ export function QuickDecisionCase({ mid, lang }: { mid: number; lang: Lang }) {
   return (
     <article className="lesson noise-decision-case">
       <p className="eyebrow">
-        {es ? "MÓDULO " + mid + " · CASO DE DECISIÓN · 2 MINUTOS" : "MODULE " + mid + " · DECISION CASE · 2 MINUTES"}
+        {es
+          ? "MÓDULO " + mid + (mode === "case" ? " · CASO DE DECISIÓN · 2 MINUTOS" : mode === "activity" ? " · ACTIVIDAD BREVE · 2 MINUTOS · OPCIONAL" : " · APLICACIÓN BREVE · 2 MINUTOS · OPCIONAL")
+          : "MODULE " + mid + (mode === "case" ? " · DECISION CASE · 2 MINUTES" : mode === "activity" ? " · QUICK ACTIVITY · 2 MINUTES · OPTIONAL" : " · QUICK APPLICATION · 2 MINUTES · OPTIONAL")}
       </p>
       <h1>{exercise.title}</h1>
       <p className="lead">
         {es
-          ? "Analiza la situación, selecciona una respuesta y comprueba el razonamiento. No tienes que redactar ningún informe."
-          : "Read the scenario, choose an answer and check the reasoning. No report writing required."}
+          ? "Una decisión concreta con los datos del caso y corrección inmediata. Sin informes ni entregables."
+          : "One clear decision using the case data, with immediate feedback. No reports or deliverables."}
       </p>
       <section className="noise-case-context" aria-label={es ? "Situación de partida" : "Background"}>
         <strong>{es ? "SITUACIÓN Y OBJETIVO" : "SITUATION AND OBJECTIVE"}</strong>
-        <p>{exercise.context}</p>
+        <p>{scenario.context}</p>
       </section>
 
       <section className="noise-case-evidence" aria-label={es ? "Datos para decidir" : "Decision data"}>
@@ -45,7 +49,7 @@ export function QuickDecisionCase({ mid, lang }: { mid: number; lang: Lang }) {
               </tr>
             </thead>
             <tbody>
-              {exercise.facts.map(([label, value]) => (
+              {scenario.facts.map(([label, value]) => (
                 <tr key={label}>
                   <th scope="row">{label}</th>
                   <td>{value}</td>
@@ -80,7 +84,7 @@ export function QuickDecisionCase({ mid, lang }: { mid: number; lang: Lang }) {
             >
               <input
                 type="radio"
-                name={"quick-case-" + mid}
+                name={"quick-" + mode + "-" + mid}
                 value={index}
                 checked={selected === index}
                 onChange={() => choose(index)}
