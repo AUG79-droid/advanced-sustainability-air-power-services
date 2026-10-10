@@ -9,6 +9,7 @@ import { masterclasses, type DiagramKind } from "./masterclass-data";
 import { beginnerGuides, type BeginnerGuide } from "./beginner-guides";
 import { TransferCheck } from "./transfer-check";
 import { NoiseDecisionCase } from "./noise-case";
+import { QuickDecisionCase } from "./quick-decision-case";
 import "./visuals.css";
 type Lang = "es" | "en";
 type View =
@@ -918,51 +919,7 @@ function ExpectedExample({ text, lang }: { text: LocalText; lang: Lang }) {
 
 function CaseStudy({ mid, lang }: { mid: number; lang: Lang }) {
   if (mid === 2) return <NoiseDecisionCase lang={lang} />;
-  const x = bilingualModules[mid - 1].caseStudy;
-  const worked = exerciseExamples[mid - 1].case;
-  return (
-    <article className="lesson case-study">
-      <p className="eyebrow">
-        {lang === "es"
-          ? `MÓDULO ${mid} · CASO DE DECISIÓN`
-          : `MODULE ${mid} · DECISION CASE`}
-      </p>
-      <h1>{tx(x.title, lang)}</h1>
-      <p className="lead">{tx(x.setting, lang)}</p>
-      <section className="case-evidence">
-        <strong>{lang === "es" ? "EXPEDIENTE DISPONIBLE" : "AVAILABLE DOSSIER"}</strong>
-        <ul>
-          {x.evidence.map((item, index) => (
-            <li key={index}>{tx(item, lang)}</li>
-          ))}
-        </ul>
-      </section>
-      <div className="callout gold">
-        <strong>{lang === "es" ? "ENCARGO" : "ASSIGNMENT"}</strong>
-        <p>{tx(x.task, lang)}</p>
-      </div>
-      <ExpectedExample text={worked} lang={lang} />
-      <label className="case-response">
-        <b>{lang === "es" ? "Tu recomendación" : "Your recommendation"}</b>
-        <textarea
-          rows={9}
-          defaultValue={
-            typeof window !== "undefined"
-              ? localStorage.getItem(`m${mid}-case`) || ""
-              : ""
-          }
-          placeholder={
-            lang === "es"
-              ? "Decisión, evidencia, limitaciones, condiciones y responsable…"
-              : "Decision, evidence, limitations, conditions and owner…"
-          }
-          onBlur={(event) =>
-            localStorage.setItem(`m${mid}-case`, event.target.value)
-          }
-        />
-      </label>
-    </article>
-  );
+  return <QuickDecisionCase key={mid} mid={mid} lang={lang} />;
 }
 
 function Activity({ mid, lang }: { mid: number; lang: Lang }) {
