@@ -8,6 +8,7 @@ import { extendedTheory } from "./extended-theory";
 import { masterclasses, type DiagramKind } from "./masterclass-data";
 import { beginnerGuides, type BeginnerGuide } from "./beginner-guides";
 import { TransferCheck } from "./transfer-check";
+import { NoiseDecisionCase } from "./noise-case";
 import "./visuals.css";
 type Lang = "es" | "en";
 type View =
@@ -916,6 +917,7 @@ function ExpectedExample({ text, lang }: { text: LocalText; lang: Lang }) {
 }
 
 function CaseStudy({ mid, lang }: { mid: number; lang: Lang }) {
+  if (mid === 2) return <NoiseDecisionCase lang={lang} />;
   const x = bilingualModules[mid - 1].caseStudy;
   const worked = exerciseExamples[mid - 1].case;
   return (
