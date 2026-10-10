@@ -937,65 +937,43 @@ function Activity({ mid, lang }: { mid: number; lang: Lang }) {
 
 function References({ mid, lang }: { mid: number; lang: Lang }) {
   const courseModule = bilingualModules[mid - 1];
+  const references = courseModule.references.filter((item) => item.url?.startsWith("https://"));
   return (
     <article className="lesson references-page">
       <p className="eyebrow">
         {lang === "es"
-          ? `MÓDULO ${mid} · FUENTES Y LÍMITES`
-          : `MODULE ${mid} · SOURCES AND LIMITS`}
+          ? `MÓDULO ${mid} · PARA PROFUNDIZAR`
+          : `MODULE ${mid} · FURTHER READING`}
       </p>
-      <h1>{lang === "es" ? "Base de evidencia" : "Evidence base"}</h1>
+      <h1>{lang === "es" ? "Fuentes para ampliar" : "Sources for further reading"}</h1>
       <p className="lead">
         {lang === "es"
-          ? "Las fuentes se usan según su función. Las normas y documentos institucionales sostienen requisitos y métodos; los manuales y estudios aportan síntesis y casos. Toda cifra o regla debe comprobar edición, jurisdicción y aplicabilidad antes de usarse en una decisión real."
-          : "Sources are used according to purpose. Standards and institutional documents support requirements and methods; textbooks and studies provide synthesis and cases. Check edition, jurisdiction and applicability before using any figure or rule in a real decision."}
+          ? "Estos enlaces permiten consultar las publicaciones relacionadas con el módulo. Algunos llevan al documento completo y otros a la ficha del editor, donde se explica su contenido. Los libros y las normas ISO pueden requerir compra o acceso institucional. Los casos y las cifras de los ejercicios son ejemplos didácticos, no resultados reales de Airbus."
+          : "These links lead to publications relevant to the module. Some open full documents; others open a publisher's description. Books and ISO standards may require payment or institutional access. The course scenarios and figures are educational examples, not actual Airbus results."}
       </p>
-      <div className="source-audit">
-        <strong>
-          {lang === "es" ? "CÓMO SE TRATÓ EL CORPUS" : "HOW THE CORPUS WAS USED"}
-        </strong>
-        <p>
-          {lang === "es"
-            ? "Los 15 informes temáticos adjuntos se utilizaron como mapas de contenido, no como autoridad automática. La auditoría de sus 496 referencias (464 únicas) identificó 247 fuentes de credibilidad baja o muy baja y 267 referencias que debían sustituirse, eliminarse o limitarse a contexto. Las cinco obras técnicas adicionales se analizaron por alcance, actualidad y trazabilidad. La recopilación didáctica de 283 páginas se estudió para extraer patrones pedagógicos —clase explicativa, transcripción, esquema, pregunta y tarea—, sin copiar su redacción ni sus imágenes. El contenido final prioriza normas, autoridades, informes técnicos revisados y literatura académica, y señala cuándo una fuente histórica necesita actualización."
-            : "The 15 supplied topic reports were used as content maps, not as automatic authority. The audit of their 496 reference occurrences (464 unique sources) identified 247 low or very-low credibility sources and 267 references requiring replacement, removal or context-only use. The five additional technical works were analysed for scope, currency and traceability. The 283-page teaching compilation was studied to extract learning patterns—explainer lesson, transcript, diagram, question and assignment—without copying its wording or images. The final course prioritises standards, authorities, reviewed technical reports and academic literature, and flags historical sources that require updating."}
-        </p>
-      </div>
-      <div className="evidence-protocol">
-        <strong>{lang === "es" ? "PROTOCOLO DEL CURSO" : "COURSE PROTOCOL"}</strong>
-        <ul>
-          <li>
-            {lang === "es"
-              ? "Ninguna cifra sin año, unidad, perímetro y fuente trazable."
-              : "No figure without year, unit, boundary and traceable source."}
-          </li>
-          <li>
-            {lang === "es"
-              ? "Ningún requisito sin jurisdicción, edición, vigencia y aplicabilidad."
-              : "No requirement without jurisdiction, edition, validity and applicability."}
-          </li>
-          <li>
-            {lang === "es"
-              ? "Ninguna afirmación sin línea base, método, limitación y responsable."
-              : "No claim without baseline, method, limitation and accountable owner."}
-          </li>
-        </ul>
-      </div>
       <div className="reference-list">
-        {courseModule.references.map((item, index) => (
-          <article key={index}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <div>
-              <small>{tx(item.kind, lang)}</small>
-              <h2>{item.title}</h2>
-              <p>{tx(item.note, lang)}</p>
-              {item.url && (
-                <a href={item.url} target="_blank" rel="noreferrer">
-                  {lang === "es" ? "Abrir fuente oficial ↗" : "Open official source ↗"}
+        {references.map((item, index) => {
+          const isBook = item.title.includes("Ben Daley") || item.title.includes("Eva Maleviti");
+          const isStandard = item.title.startsWith("ISO ");
+          const actionLabel = isBook
+            ? (lang === "es" ? "Ver ficha editorial ↗" : "View publisher details ↗")
+            : isStandard
+              ? (lang === "es" ? "Consultar norma ISO ↗" : "View ISO standard ↗")
+              : (lang === "es" ? "Consultar publicación ↗" : "Open publication ↗");
+          return (
+            <article key={item.url}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <small>{tx(item.kind, lang)}</small>
+                <h2>{item.title}</h2>
+                <p>{tx(item.note, lang)}</p>
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  {actionLabel}
                 </a>
-              )}
-            </div>
-          </article>
-        ))}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </article>
   );
