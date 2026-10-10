@@ -756,3 +756,100 @@
   .transfer-selfcheck-question { padding: 11px; }
   .transfer-selfcheck-option { padding: 10px; grid-template-columns: 18px 18px minmax(0,1fr); gap: 8px; }
 }
+
+
+
+/* Module 2: concise, evidence-based decision instead of a written dossier. */
+.noise-decision-case { max-width: 880px; }
+.noise-decision-case .lead { margin-bottom: 22px; }
+.noise-case-context, .noise-case-evidence, .noise-case-task {
+  border: 1px solid #cbdce3;
+  background: #f4f9fb;
+  padding: 24px;
+  margin: 18px 0;
+  border-radius: 12px;
+  color: #172e3b;
+}
+.noise-case-context { border-left: 5px solid #16a9be; }
+.noise-case-context > strong, .noise-case-evidence > strong, .noise-case-task .noise-case-prompt > strong {
+  font: 800 11px/1.4 system-ui, sans-serif;
+  letter-spacing: .10em;
+  color: #006f88;
+  display: block;
+  margin-bottom: 10px;
+}
+.noise-decision-case .noise-case-context p,
+.noise-decision-case .noise-case-note,
+.noise-decision-case .noise-case-feedback p {
+  line-height: 1.62;
+  font-size: 15px;
+}
+.noise-case-context p + p { margin-top: 12px; }
+.noise-case-evidence { background: #fff; }
+.noise-case-table-wrap { overflow-x: auto; width: 100%; }
+.noise-case-table-wrap table { border-collapse: collapse; width: 100%; font-size: 14px; color: #173246; }
+.noise-case-table-wrap th, .noise-case-table-wrap td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #d5e3e9;
+  text-align: left;
+  vertical-align: top;
+}
+.noise-case-table-wrap thead th { background: #e7f3f7; font-weight: 800; }
+.noise-case-table-wrap tbody th { font-weight: 600; }
+.noise-case-table-wrap td { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.noise-decision-case .noise-case-note { color: #536573; margin: 14px 0 0; font-size: 13px; }
+.noise-case-task { border-color: #e8d4a5; background: #fff9ea; }
+.noise-case-prompt { color: #122e42; font-size: 17px; line-height: 1.6; margin: 0 0 20px; }
+.noise-case-task fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.noise-case-task legend { font-size: 14px; font-weight: 700; padding-bottom: 12px; color: #253e4d; }
+.noise-case-option {
+  display: grid;
+  grid-template-columns: 20px 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  background: white;
+  padding: 14px;
+  border: 1px solid #cedbe2;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font: 450 14px/1.5 system-ui, sans-serif;
+  color: #172e3d;
+}
+.noise-case-option:hover { border-color: #28769e; }
+.noise-case-option:focus-within { outline: 2px solid #247da6; outline-offset: 2px; }
+.noise-case-option input { accent-color: #007b9b; margin: 3px 0 0; }
+.noise-case-option-letter { font-weight: 900; color: #21607e; }
+.noise-case-option.selected { background: #e7f5fa; border-color: #2082ac; }
+.noise-case-option.correct { background: #eaf8ee; border-color: #2f995f; }
+.noise-case-option.incorrect { background: #fff0ea; border-color: #d4775f; }
+.noise-case-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.noise-case-actions button {
+  border: 0;
+  background: #103e5a;
+  color: white;
+  padding: 12px 18px;
+  min-height: 44px;
+  font: 750 14px/1.35 system-ui, sans-serif;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.noise-case-actions button:disabled { opacity: .5; cursor: not-allowed; }
+.noise-case-actions button.noise-case-retry { background: #dfeef4; color: #163e55; }
+.noise-case-feedback {
+  background: #e5f5ec;
+  border-left: 4px solid #278b59;
+  margin-top: 18px;
+  padding: 17px 18px;
+  border-radius: 4px;
+  color: #173a2b;
+}
+.noise-case-feedback.is-incorrect { background: #fff1eb; border-left-color: #d36e48; color: #5c3527; }
+.noise-case-feedback strong { font-size: 15px; font-weight: 800; }
+.noise-decision-case .noise-case-feedback p { margin: 10px 0 0; color: inherit; }
+.noise-decision-case .noise-case-takeaway { font-weight: 700; }
+@media(max-width: 640px) {
+  .noise-case-context, .noise-case-evidence, .noise-case-task { padding: 15px; }
+  .noise-case-table-wrap th, .noise-case-table-wrap td { padding: 10px 8px; }
+  .noise-case-option { padding: 11px; gap: 7px; grid-template-columns: 18px 18px minmax(0,1fr); }
+}
