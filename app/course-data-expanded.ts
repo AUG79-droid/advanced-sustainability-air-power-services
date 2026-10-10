@@ -382,8 +382,8 @@ const specs: ModuleSpec[] = [
     shortTitle: t("Footprint measurement", "Medición de huella"),
     promise: t("Build decision-grade inventories and life-cycle comparisons without hiding allocation, data quality or uncertainty.", "Construir inventarios y comparaciones de ciclo de vida útiles para decidir sin ocultar asignación, calidad de datos o incertidumbre."),
     duration: "100 min",
-    image: "/course/lifecycle-visual.png",
-    imageAlt: t("Aerospace life-cycle and evidence flow", "Ciclo de vida aeroespacial y flujo de evidencia"),
+    image: "/course/a400m-lifecycle.png",
+    imageAlt: t("Airbus Defence and Space A400M life-cycle and evidence flow", "Ciclo de vida y flujo de evidencias del A400M de Airbus Defence and Space"),
     theoryIndex: 4,
     objectives: [t("Write a goal-and-scope statement and functional unit.", "Redactar objetivo, alcance y unidad funcional."), t("Build an inventory with lineage and quality ratings.", "Construir un inventario con trazabilidad y valoración de calidad."), t("Interpret results with sensitivity, uncertainty and absolute totals.", "Interpretar resultados con sensibilidad, incertidumbre y totales absolutos.")],
     lessons: [
