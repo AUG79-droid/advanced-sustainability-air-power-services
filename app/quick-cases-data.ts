@@ -449,5 +449,455 @@ export const quickCaseData: Record<number,{ es: QuickCase; en: QuickCase }> = {
       "correct": 1,
       "explanation": "Turbidity of 5 NTU fails the illustrative internal limit of 2 NTU, so reuse is not validated. The rejected water also needs an appropriate approved route. Potential savings cannot override process quality and waste controls."
     }
+  },
+  "9": {
+  "es": {
+    "title": "¿Podemos modificar el drenaje junto al área operativa?",
+    "context": "Caso ficticio. En una zona próxima a operaciones del A400M se plantea drenar una charca temporal que puede atraer aves. Las obras reducirían el agua estancada en ese punto, pero desplazarían la escorrentía a una parcela de hábitat estacional. El inventario ecológico solo cubre una visita en época seca.",
+    "facts": [
+      [
+        "Zona donde se eliminaría agua estancada",
+        "0,6 ha"
+      ],
+      [
+        "Área receptora de escorrentía",
+        "0,4 ha de hábitat estacional"
+      ],
+      [
+        "Estudios de fauna",
+        "Una visita en época seca"
+      ],
+      [
+        "Hidrología y estatus de especies",
+        "Sin verificación suficiente"
+      ]
+    ],
+    "question": "¿Aprobarías las obras de drenaje tal como están proyectadas?",
+    "options": [
+      "Sí, porque cualquier reducción de agua es positiva cerca de aeronaves.",
+      "No por ahora: evaluar alternativas, hidrología y fauna estacional, manteniendo controles temporales de riesgo de aves.",
+      "Sí, porque una sola visita demuestra que no hay especies sensibles."
+    ],
+    "correct": 1,
+    "explanation": "Reducir un atrayente de aves puede ser necesario para la seguridad, pero desplazar la escorrentía sin evaluación podría crear otro problema ecológico o de operación. Deben revisarse alternativas y requisitos legales sin desatender el control inmediato del peligro de fauna."
+  },
+  "en": {
+    "title": "Should drainage works near an operating area be approved?",
+    "context": "Fictional case. Near A400M operations, a team proposes draining a temporary pool that may attract birds. The works would reduce standing water at that location but redirect runoff towards seasonal habitat. Ecological evidence consists of one dry-season visit only.",
+    "facts": [
+      [
+        "Area of standing water to remove",
+        "0.6 ha"
+      ],
+      [
+        "Runoff receiving area",
+        "0.4 ha seasonal habitat"
+      ],
+      [
+        "Wildlife survey",
+        "One dry-season visit"
+      ],
+      [
+        "Hydrology and protected species",
+        "Insufficiently checked"
+      ]
+    ],
+    "question": "Would you approve the proposed drainage works as designed?",
+    "options": [
+      "Yes. Eliminating water is always environmentally positive near aircraft.",
+      "Not yet. Assess alternatives, hydrology and seasonal wildlife while maintaining interim bird-risk controls.",
+      "Yes. One site visit establishes that no sensitive species exist."
+    ],
+    "correct": 1,
+    "explanation": "Reducing bird attractants can be important for safety, but redirecting runoff without assessment may shift risks to habitat or operations. Alternatives and legal requirements need review while immediate wildlife hazards remain controlled."
   }
+},
+  "10": {
+  "es": {
+    "title": "¿Puede empezar esta reparación de composite en despliegue?",
+    "context": "Caso ficticio. Una reparación autorizada de un panel requiere lijado de composite, aplicación de resina y curado. El equipo está desplazado y trabaja en un refugio provisional. El procedimiento aprobado exige extracción localizada durante el lijado; en el emplazamiento no se alcanza el caudal de extracción establecido.",
+    "facts": [
+      [
+        "Extracción exigida por el procedimiento del supuesto",
+        "500 m³/h"
+      ],
+      [
+        "Extracción disponible",
+        "200 m³/h"
+      ],
+      [
+        "Residuos de polvo y resina",
+        "Almacenamiento específico aún no preparado"
+      ],
+      [
+        "Alternativa",
+        "Taller aprobado disponible con mayor tiempo de traslado"
+      ]
+    ],
+    "question": "¿Qué decisión tomarías antes de iniciar el lijado?",
+    "options": [
+      "Iniciar el trabajo con una mascarilla como único control alternativo.",
+      "Empezar solo la mitad del trabajo para cumplir el plazo.",
+      "No iniciar el lijado en ese refugio: habilitar controles aprobados o trasladar la reparación a una instalación adecuada."
+    ],
+    "correct": 2,
+    "explanation": "La extracción disponible no cumple el requisito supuesto del procedimiento y falta almacenamiento seguro de residuos. El equipo no debe improvisar una modificación del proceso por presión de plazo; los responsables técnicos y de seguridad deben aprobar cualquier alternativa."
+  },
+  "en": {
+    "title": "Can this deployed composite repair begin?",
+    "context": "Fictional case. An approved panel repair requires composite sanding, resin application and curing. The team is deployed in a temporary shelter. Its approved procedure requires local extraction during sanding, but the site cannot meet the specified extraction rate.",
+    "facts": [
+      [
+        "Extraction required by the assumed procedure",
+        "500 m³/h"
+      ],
+      [
+        "Available extraction",
+        "200 m³/h"
+      ],
+      [
+        "Dust and resin waste",
+        "Dedicated storage not prepared"
+      ],
+      [
+        "Alternative",
+        "Approved workshop available with longer transport time"
+      ]
+    ],
+    "question": "What should the team do before sanding starts?",
+    "options": [
+      "Start work with a respirator as the only alternative control.",
+      "Start half the work to meet the deadline.",
+      "Do not sand in that shelter: establish approved controls or move the repair to a suitable facility."
+    ],
+    "correct": 2,
+    "explanation": "Available extraction fails the assumed approved requirement and waste storage is not ready. Schedule pressure cannot justify an unapproved process change; technical and safety authorities must approve any equivalent control."
+  }
+},
+  "11": {
+  "es": {
+    "title": "¿Puede un algoritmo sustituir ya las inspecciones del Eurofighter?",
+    "context": "Caso ficticio. Un equipo propone reducir inspecciones programadas de un componente mediante diagnóstico predictivo. El algoritmo se ha probado principalmente con temperaturas moderadas. En condiciones frías genera muchas más falsas alarmas y todavía no tiene aprobación para sustituir la inspección física exigida.",
+    "facts": [
+      [
+        "Sensibilidad en datos de validación",
+        "94 %"
+      ],
+      [
+        "Falsas alarmas con temperatura moderada",
+        "4 %"
+      ],
+      [
+        "Falsas alarmas con frío",
+        "28 %"
+      ],
+      [
+        "Autorización para eliminar inspecciones",
+        "No concedida"
+      ]
+    ],
+    "question": "¿Qué implantación sería aceptable en este momento?",
+    "options": [
+      "Suprimir las inspecciones físicas porque la sensibilidad alcanza el 94 %.",
+      "Usar el modelo en paralelo, medir errores por configuración y temperatura y mantener inspecciones hasta la aprobación competente.",
+      "Desactivar permanentemente toda monitorización predictiva."
+    ],
+    "correct": 1,
+    "explanation": "La sensibilidad por sí sola no demuestra seguridad en todas las condiciones. El 28 % de falsas alarmas en frío señala un problema de aplicabilidad y no existe autorización para retirar una tarea exigida. Un ensayo en paralelo puede generar evidencia sin comprometer el control aprobado."
+  },
+  "en": {
+    "title": "Can an algorithm replace Eurofighter inspections now?",
+    "context": "Fictional case. A team proposes reducing scheduled component inspections using predictive diagnostics. The model was mainly evaluated at moderate temperatures. In cold conditions it generates many more false alerts and has not been approved to replace the mandated physical inspection.",
+    "facts": [
+      [
+        "Sensitivity on validation data",
+        "94%"
+      ],
+      [
+        "False alarms in moderate conditions",
+        "4%"
+      ],
+      [
+        "False alarms in cold conditions",
+        "28%"
+      ],
+      [
+        "Approval to remove required inspections",
+        "Not granted"
+      ]
+    ],
+    "question": "What implementation is acceptable now?",
+    "options": [
+      "Remove physical inspections because sensitivity is 94%.",
+      "Use the model in parallel, measure performance across conditions and retain inspections pending competent approval.",
+      "Permanently ban any predictive monitoring."
+    ],
+    "correct": 1,
+    "explanation": "Sensitivity alone does not establish safe performance across operating conditions. A 28% cold-weather false-alert rate highlights applicability issues, and removal of mandatory inspections is not authorised. Parallel monitoring builds evidence without bypassing approved controls."
+  }
+},
+  "12": {
+  "es": {
+    "title": "¿Sustituir ahora el equipo de apoyo del A400M?",
+    "context": "Caso ficticio. Un equipo de apoyo operativo puede seguir usándose cinco años más con mantenimiento aprobado. Un sustituto consumiría menos electricidad anual, pero fabricarlo tiene un consumo incorporado considerable y requiere dos años de soporte paralelo. Ambos cumplen la función; la decisión debe incluir las etapas del ciclo de vida.",
+    "facts": [
+      [
+        "Consumo eléctrico anual actual",
+        "12 MWh"
+      ],
+      [
+        "Consumo anual del nuevo equipo",
+        "8 MWh"
+      ],
+      [
+        "Energía incorporada de fabricación del sustituto",
+        "40 MWh"
+      ],
+      [
+        "Vida remanente del equipo actual",
+        "5 años"
+      ],
+      [
+        "Soporte paralelo de transición",
+        "Energía adicional, aún sin cuantificar"
+      ]
+    ],
+    "question": "¿Demuestran estos datos que sustituir ahora es mejor en términos energéticos?",
+    "options": [
+      "No. El ahorro operativo de cinco años sería 20 MWh, inferior a los 40 MWh de fabricación, incluso antes de incluir la transición.",
+      "Sí. La cifra anual de 8 MWh es menor y eso siempre decide.",
+      "Sí. La fabricación no forma parte de la comparación porque ocurre fuera de la base."
+    ],
+    "correct": 0,
+    "explanation": "Ahorro anual: 12 − 8 = 4 MWh. En cinco años: 20 MWh, frente a 40 MWh incorporados al sustituto; aún falta contabilizar el soporte paralelo. Esta comparación energética orientativa no sustituye el análisis completo de seguridad, fiabilidad, fin de vida o coste."
+  },
+  "en": {
+    "title": "Should the A400M support equipment be replaced now?",
+    "context": "Fictional case. An operating support asset can remain in approved service for five more years. A replacement uses less electricity each year but has substantial manufacturing energy and needs two years of parallel support. Both meet the required function; lifecycle stages matter.",
+    "facts": [
+      [
+        "Current annual electricity",
+        "12 MWh"
+      ],
+      [
+        "Replacement annual electricity",
+        "8 MWh"
+      ],
+      [
+        "Manufacturing energy embodied in replacement",
+        "40 MWh"
+      ],
+      [
+        "Remaining life of current asset",
+        "5 years"
+      ],
+      [
+        "Parallel transition support",
+        "Extra energy, not yet quantified"
+      ]
+    ],
+    "question": "Do these data prove that immediate replacement is better in energy terms?",
+    "options": [
+      "No. Five-year operational saving is 20 MWh, below the 40 MWh manufacturing energy, before transition energy.",
+      "Yes. The 8 MWh annual figure is lower and always decides.",
+      "Yes. Manufacturing is outside the base and can be excluded."
+    ],
+    "correct": 0,
+    "explanation": "Annual saving is 12 − 8 = 4 MWh; over five years, 20 MWh against 40 MWh of embodied manufacturing energy, before transition energy. This illustrative energy check does not replace the broader safety, reliability, end-of-life or cost assessment."
+  }
+},
+  "13": {
+  "es": {
+    "title": "¿Se puede autorizar el desmantelamiento y declarar «cero vertedero»?",
+    "context": "Caso ficticio. Se prepara la retirada de una aeronave de transporte militar. El licitador ofrece recuperar componentes y promete enviar cero residuos a vertedero, pero no proporciona instalaciones de destino. Parte de los componentes carece de trazabilidad y sigue pendiente la identificación de determinados residuos peligrosos.",
+    "facts": [
+      [
+        "Componentes propuestos para reutilización",
+        "120"
+      ],
+      [
+        "Componentes sin trazabilidad completa",
+        "35"
+      ],
+      [
+        "Instalaciones finales de tratamiento",
+        "No identificadas"
+      ],
+      [
+        "Estudio de sustancias y residuos peligrosos",
+        "Incompleto"
+      ]
+    ],
+    "question": "¿Qué se puede aprobar o comunicar en este momento?",
+    "options": [
+      "Publicar «cero vertedero» y liberar los 120 componentes.",
+      "Aprobar la reutilización de las 35 piezas sin registros porque parecen válidas.",
+      "Exigir inventario, trazabilidad, desmilitarización y destinos autorizados antes de liberar piezas o verificar la promesa del licitador."
+    ],
+    "correct": 2,
+    "explanation": "Sin registros completos no puede liberarse una pieza para reutilización aeronáutica, y «cero vertedero» no está demostrado sin destinos verificables. Los residuos peligrosos y las exigencias de seguridad y desmilitarización también requieren un proceso documentado."
+  },
+  "en": {
+    "title": "Can dismantling and a ‘zero landfill’ claim be approved?",
+    "context": "Fictional case. A military transport aircraft is being retired. A bidder proposes recovering components and promises zero landfill, but does not name downstream treatment facilities. Some parts have incomplete traceability and the hazardous-material survey remains unfinished.",
+    "facts": [
+      [
+        "Components proposed for reuse",
+        "120"
+      ],
+      [
+        "Components without complete records",
+        "35"
+      ],
+      [
+        "Final waste-treatment facilities",
+        "Not identified"
+      ],
+      [
+        "Hazardous-material and waste survey",
+        "Incomplete"
+      ]
+    ],
+    "question": "What can be approved or claimed at this stage?",
+    "options": [
+      "Publish ‘zero landfill’ and release all 120 parts.",
+      "Approve reuse of the 35 unrecorded parts because they look serviceable.",
+      "Require inventory, traceability, demilitarisation and authorised waste destinations before parts are released or the bidder claim is verified."
+    ],
+    "correct": 2,
+    "explanation": "Parts lacking records cannot simply be released for aviation reuse, and zero landfill is unproven without traceable downstream routes. Hazardous waste, security and demilitarisation controls also need documented evidence."
+  }
+},
+  "14": {
+  "es": {
+    "title": "¿Cómo gestionar una avería de suministro durante una ola de calor?",
+    "context": "Caso ficticio. Durante una ola de calor, una base pierde el suministro habitual de un producto químico aprobado para una operación de mantenimiento. Un proveedor ofrece una alternativa todavía no cualificada. En un área de trabajo se supera un umbral interno de temperatura que obliga a revisar las condiciones de trabajo.",
+    "facts": [
+      [
+        "Stock del producto aprobado",
+        "12 días"
+      ],
+      [
+        "Interrupción prevista de suministro",
+        "20 días"
+      ],
+      [
+        "Sustituto ofrecido",
+        "Sin cualificación ni aprobación técnica"
+      ],
+      [
+        "Temperatura en el área afectada",
+        "34 °C"
+      ],
+      [
+        "Umbral interno de revisión de condiciones",
+        "30 °C en este supuesto"
+      ]
+    ],
+    "question": "¿Qué respuesta mantiene el control de ambos riesgos?",
+    "options": [
+      "Utilizar inmediatamente el sustituto y mantener todos los turnos sin cambios.",
+      "Escalonar o detener las tareas afectadas según controles de calor, buscar suministro cualificado y elevar el riesgo operativo; no usar químicos sin aprobación.",
+      "Ocultar la rotura de suministro hasta que se agote el stock."
+    ],
+    "correct": 1,
+    "explanation": "El stock cubre 12 de 20 días, por lo que existe una brecha. La alternativa requiere cualificación; además, 34 °C activa la revisión interna del supuesto. La disponibilidad importa, pero no autoriza incumplir requisitos técnicos ni de prevención."
+  },
+  "en": {
+    "title": "How should a supply failure during a heatwave be handled?",
+    "context": "Fictional case. During a heatwave, a base loses access to an approved maintenance chemical. Another supplier offers an unqualified substitute. A work area also exceeds an internal heat trigger requiring working-condition review.",
+    "facts": [
+      [
+        "Approved chemical stock",
+        "12 days"
+      ],
+      [
+        "Expected supply interruption",
+        "20 days"
+      ],
+      [
+        "Offered substitute",
+        "Not technically qualified or approved"
+      ],
+      [
+        "Temperature in affected work area",
+        "34°C"
+      ],
+      [
+        "Internal working-condition review trigger",
+        "30°C in this example"
+      ]
+    ],
+    "question": "Which response controls both risks?",
+    "options": [
+      "Use the offered substitute immediately and keep shifts unchanged.",
+      "Reschedule or stop affected work under heat controls, seek qualified supply and escalate mission implications; do not use unapproved chemicals.",
+      "Conceal the disruption until stock runs out."
+    ],
+    "correct": 1,
+    "explanation": "Stock covers only 12 of the 20 days, leaving a supply gap. The alternative requires approval; 34°C also triggers the assumed internal heat review. Operational availability does not justify bypassing technical or worker-safety controls."
+  }
+},
+  "15": {
+  "es": {
+    "title": "¿Puede publicarse una mejora ambiental global de Air Power Services?",
+    "context": "Caso ficticio. El borrador anual reúne resultados de electricidad, combustible y reciclaje y concluye que todos los servicios han mejorado. Sin embargo, la superficie cubierta por el indicador de electricidad ha cambiado respecto al año anterior y un ensayo de consumo se ha extrapolado al conjunto de las operaciones.",
+    "facts": [
+      [
+        "Electricidad del centro",
+        "−12 %, pero cambia el perímetro medido"
+      ],
+      [
+        "Ensayo de combustible",
+        "12 operaciones comparables"
+      ],
+      [
+        "Población a la que se extrapola el ensayo",
+        "180 operaciones de otro alcance"
+      ],
+      [
+        "Datos de reciclaje",
+        "Sin trazabilidad suficiente del tratamiento final"
+      ]
+    ],
+    "question": "¿Firmarías la afirmación «Air Power Services ha mejorado globalmente su sostenibilidad»?",
+    "options": [
+      "Sí: basta con que los tres indicadores parezcan positivos.",
+      "No como afirmación global: corregir comparabilidad y trazabilidad, delimitar cada resultado y no extrapolar el piloto sin evidencia.",
+      "Sí, siempre que se añada una imagen ambiental convincente."
+    ],
+    "correct": 1,
+    "explanation": "La variación de perímetro invalida una comparación directa del −12 %. Doce operaciones no prueban el resultado de otras 180, y el destino final del reciclaje no está verificado. Solo deben publicarse resultados específicos con alcance, metodología, limitaciones y trazabilidad."
+  },
+  "en": {
+    "title": "Can an overall Air Power Services sustainability improvement be claimed?",
+    "context": "Fictional case. The annual draft combines electricity, fuel and recycling and claims that all services have improved. However, the electricity reporting boundary changed from the previous year, and one fuel trial has been extrapolated across a much larger operation.",
+    "facts": [
+      [
+        "Site electricity",
+        "−12%, but the measured boundary changed"
+      ],
+      [
+        "Fuel trial",
+        "12 comparable operations"
+      ],
+      [
+        "Population to which the trial was extrapolated",
+        "180 operations in a different scope"
+      ],
+      [
+        "Recycling data",
+        "Insufficient final-treatment traceability"
+      ]
+    ],
+    "question": "Would you sign the statement ‘Air Power Services has improved overall sustainability’?",
+    "options": [
+      "Yes: three positive-looking indicators are sufficient.",
+      "Not as an overall claim: correct comparability and traceability, limit each result and avoid extrapolating the pilot without evidence.",
+      "Yes, provided it has convincing environmental imagery."
+    ],
+    "correct": 1,
+    "explanation": "Changed boundaries invalidate direct comparison of the 12% figure. Twelve operations do not establish results for another 180, and recycling outcomes are unverified. Publish only specific, traceable claims with declared scope, method and limitations."
+  }
+}
 };
