@@ -508,8 +508,8 @@ const specs: ModuleSpec[] = [
     shortTitle: t("Biodiversity", "Biodiversidad"),
     promise: t("Manage safety and nature dependencies through site-specific mitigation hierarchy and outcome monitoring.", "Gestionar seguridad y dependencias naturales mediante jerarquía de mitigación y seguimiento de resultados."),
     duration: "85 min",
-    image: "/course/unique/module7-a400m-base-operations.png",
-    imageAlt: t("Base biodiversity evidence and habitat map", "Mapa de hábitat y evidencia de biodiversidad de una base"),
+    image: "/course/m5-biodiversity.png",
+    imageAlt: t("Biodiversity and habitats", "Biodiversidad y hábitats"),
     theoryIndex: 6,
     objectives: [t("Build a site biodiversity baseline and pressure map.", "Construir línea base y mapa de presiones."), t("Integrate wildlife-strike safety with conservation controls.", "Integrar seguridad frente a fauna y conservación."), t("Apply avoid-minimise-restore-compensate without unsupported net-gain claims.", "Aplicar evitar-minimizar-restaurar-compensar sin afirmaciones no respaldadas." )],
     lessons: [
