@@ -194,8 +194,8 @@ const profiles: Profile[] = [
   },
   {
     name: t("Biodiversidad y fauna", "Biodiversity and wildlife"),
-    image: "/course/unique/module7-a400m-base-operations.png",
-    imageAlt: t("Análisis operacional de una base aérea", "Operational analysis of an air base"),
+    image: "/course/m5-biodiversity.png",
+    imageAlt: t("Biodiversidad y hábitats", "Biodiversity and habitats"),
     system: t("hábitat, especies, movimientos de fauna, uso del suelo, agua, iluminación y operaciones aéreas y terrestres", "habitat, species, wildlife movement, land use, water, lighting and air and ground operations"),
     problem: t("proteger biodiversidad y reducir riesgo de impacto con fauna pueden entrar en tensión si una actuación crea hábitat atractivo junto al área operativa", "protecting biodiversity and reducing wildlife-strike risk can conflict if an action creates attractive habitat beside the operating area"),
     mechanisms: [t("atractores de alimento, agua y refugio", "food, water and shelter attractants"), t("movimientos estacionales y horarios", "seasonal and daily movements"), t("fragmentación, iluminación y ruido", "fragmentation, lighting and noise"), t("interacción entre hábitat y seguridad de vuelo", "interaction between habitat and flight safety")],
