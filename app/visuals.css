@@ -112,6 +112,23 @@
   filter: saturate(.72) contrast(1.08);
 }
 
+/* Module 7 (noise), slide 1: show the A400M clear of the text and vignette.
+   The same presentation is shared by the ES and EN language modes. */
+.module-7.slide-1 .deck-hero {
+  inset: 0 0 0 48%;
+}
+
+.module-7.slide-1 .deck-hero img {
+  object-position: 35% 50%;
+  filter: saturate(.94) contrast(1.12) brightness(1.2);
+}
+
+.module-7.slide-1 .deck-hero::after {
+  background:
+    linear-gradient(90deg, rgba(9, 25, 35, .9) 0%, rgba(9, 25, 35, .24) 17%, transparent 36%),
+    linear-gradient(0deg, rgba(7, 23, 32, .56) 0%, transparent 28%);
+}
+
 .deck-hero figcaption {
   position: absolute;
   right: 22px;
@@ -631,6 +648,12 @@
   .deck-copy h1 { font-size: 39px; }
   .deck-copy > p:not(.slide-eyebrow) { font-size: 15px; }
   .deck-hero { inset: 44% 0 0; opacity: .52; }
+  /* Keep the noise-module aircraft readable on narrow screens too. */
+  .module-7.slide-1 .deck-hero { inset: 48% 0 0; opacity: .88; }
+  .module-7.slide-1 .deck-hero img { object-position: 35% 50%; }
+  .module-7.slide-1 .deck-hero::after {
+    background: linear-gradient(180deg, #091923 0%, transparent 40%), linear-gradient(0deg, #071720a8 0%, transparent 24%);
+  }
   .slide-takeaways, .diagram-flow, .diagram-timeline { grid-template-columns: 1fr 1fr; }
   .diagram-flow .diagram-node::after, .diagram-timeline .diagram-node::after { display: none; }
   .masterclass-chapter { padding: 24px 20px; }
