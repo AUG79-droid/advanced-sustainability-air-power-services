@@ -291,7 +291,7 @@ export const beginnerGuides: BeginnerGuide[] = [
       { term: t("Segregación", "Segregation"), meaning: t("Separar corrientes sin mezclarlas.", "Keep streams separate without mixing."), example: t("Trapos contaminados separados de papel limpio.", "Contaminated wipes separated from clean paper." ) },
       { term: t("Carga contaminante", "Pollutant load"), meaning: t("Cantidad total de contaminante, no solo su concentración.", "Total amount of pollutant, not only concentration."), example: t("Concentración multiplicada por volumen vertido.", "Concentration multiplied by discharged volume." ) },
     ],
-    commonMistake: t("Celebrar una tasa de reciclaje alta sin comprobar cuánto residuo total se generó ni adónde llegó realmente.", "Celebrating a high recycling rate without checking total waste generation or where it actually went."),
+    commonMistake: t("Celebrar una tasa de reciclaje alta sin comprobar cuánto residuo total se generó ni a dónde llegó realmente.", "Celebrating a high recycling rate without checking total waste generation or where it actually went."),
     actions: [t("Medir por proceso o tarea.", "Measure by process or task."), t("Aplicar prevención antes que reciclaje.", "Apply prevention before recycling."), t("Segregar en el punto de generación.", "Segregate at the point of generation."), t("Verificar analíticas y destino final.", "Verify analyses and final destination." )],
   },
   {
