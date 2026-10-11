@@ -586,7 +586,7 @@ function Presentation({ mid, lang }: { mid: number; lang: Lang }) {
             />
           ))}
         </div>
-        <section className={`deck-slide slide-${slideIndex + 1}`}>
+        <section className={`deck-slide slide-${slideIndex + 1} module-${mid}`}>
           {slideIndex === 0 && (
             <figure className="deck-hero">
               <img src={deck.image} alt={tx(deck.imageAlt, lang)} />
